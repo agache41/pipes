@@ -9,37 +9,9 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import java.util.Collections;
-import java.util.List;
 
 
-public abstract class TestHead<T extends TestBean> extends AbstractBaseStreamTest<T> {
-    @Test
-    @Order(0)
-    @Execution(ExecutionMode.SAME_THREAD)
-    void testWrite() throws Throwable {
-        this.file.delete();
-        Assertions.assertFalse(this.file.exists());
-        this.parser.write(this.testFileName, this.values.stream());
-        Assertions.assertTrue(this.file.exists());
-        Assertions.assertTrue(this.file.delete());
-        Assertions.assertFalse(this.file.exists());
-        this.parser.write(this.testFileName, this.values.stream());
-        Assertions.assertTrue(this.file.exists());
-    }
-
-    @Test
-    @Order(1)
-    @Execution(ExecutionMode.SAME_THREAD)
-    void testRead() throws Throwable {
-        List<T> readValues = this.readFile("");
-        System.out.println("Comparing expected = read");
-        System.out.println(this.values);
-        System.out.println(readValues);
-        Assertions.assertTrue(CollectionUtils.isEqualCollection(this.values, readValues));
-        Assertions.assertTrue(this.file.delete());
-        Assertions.assertFalse(this.file.exists());
-    }
-
+public abstract class ExtendedReadWriteTest<T extends TestBean> extends ReadWriteTest<T> {
     @Test
     @Order(2)
     @Execution(ExecutionMode.SAME_THREAD)
@@ -57,14 +29,14 @@ public abstract class TestHead<T extends TestBean> extends AbstractBaseStreamTes
     @Test
     @Order(4)
     @Execution(ExecutionMode.SAME_THREAD)
-    void testReadLessRequiredColumns() throws Throwable {
+    void testReadLessRequiredColumns() {
         Assertions.assertThrows(RuntimeException.class, () -> this.readFile("-lessRequiredColumns"));
     }
 
     @Test
     @Order(5)
     @Execution(ExecutionMode.SAME_THREAD)
-    void testEmptyFile() throws Throwable {
+    void testEmptyFile() {
         Assertions.assertThrows(RuntimeException.class, () -> this.readFile("-empty"));
     }
 
@@ -78,7 +50,7 @@ public abstract class TestHead<T extends TestBean> extends AbstractBaseStreamTes
     @Test
     @Order(6)
     @Execution(ExecutionMode.SAME_THREAD)
-    void testEmptyLinesFile() throws Throwable {
+    void testEmptyLinesFile() {
         Assertions.assertThrows(RuntimeException.class, () -> this.readFile("-emptyLines"));
     }
 }

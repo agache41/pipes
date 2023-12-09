@@ -9,7 +9,6 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Execution(ExecutionMode.CONCURRENT)
@@ -19,19 +18,12 @@ public abstract class AbstractBaseObjectTest<T> {
     protected CSVFile.StringObjectParser<T> parser;
     protected String testFileName;
     protected File file;
-    private Constructor<T> constructor;
     private String extension;
 
     protected void init(Class<T> clazz, String extension) {
 
         this.extension = extension;
-        try {
-            this.constructor = clazz.getConstructor();
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
-
-        this.parser = new CSVFile.StringObjectParser<T>(clazz);
+        this.parser = new CSVFile.StringObjectParser<>(clazz);
         this.testFileName = this.getTestFileName("");
         this.file = this.getTestFile(this.testFileName);
     }
@@ -52,8 +44,6 @@ public abstract class AbstractBaseObjectTest<T> {
         Assertions.assertTrue(suffixColumnsFile.exists());
         T value = this.parser.read(suffixFileName);
         Assertions.assertNotNull(value);
-        Assertions.assertTrue(suffixColumnsFile.delete());
-        Assertions.assertFalse(suffixColumnsFile.exists());
         return value;
     }
 
@@ -65,14 +55,4 @@ public abstract class AbstractBaseObjectTest<T> {
         this.parser.write(suffixFileName, bean);
         Assertions.assertTrue(suffixColumnsFile.exists());
     }
-
-
-    protected void testWriteRead(T bean, String suffix) throws Throwable {
-        this.writeFile(bean, suffix);
-        T readBean = this.readFile("");
-        System.out.println("Written :" + bean);
-        System.out.println("Read    :" + bean);
-        Assertions.assertEquals(bean, readBean);
-    }
-
 }

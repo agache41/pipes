@@ -1,9 +1,9 @@
 package com.orm.pipes.spreadSheet.dataAsString;
 
-import com.orm.pipes.spreadSheet.ExcelBaseTest;
+import com.orm.pipes.baseTest.ReadWriteTest;
 import com.orm.pipes.spreadSheet.SpreadSheet;
 
-class ExcelTest extends ExcelBaseTest<ExcelTestBean> {
+class ExcelTest extends ReadWriteTest<ExcelTestBean> {
     public ExcelTest() {
         super.init(ExcelTestBean.class, SpreadSheet.xls.extension);
     }

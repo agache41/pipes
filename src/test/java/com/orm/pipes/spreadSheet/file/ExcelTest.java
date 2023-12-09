@@ -1,11 +1,10 @@
 package com.orm.pipes.spreadSheet.file;
 
-import com.orm.pipes.spreadSheet.ExcelBaseTest;
+import com.orm.pipes.baseTest.ReadWriteTest;
 import com.orm.pipes.spreadSheet.SpreadSheet;
 import com.orm.pipes.spreadSheet.SpreadSheet.file.FileStreamParser;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -21,10 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
-class ExcelTest extends ExcelBaseTest<ExcelTemplateBean> {
-
-    private final FileStreamParser<ExcelFileAppendBean> noTemplateParser = FileStreamParser.ofClass(ExcelFileAppendBean.class, "noAppend");
-
+class ExcelTest extends ReadWriteTest<ExcelTemplateBean> {
     private final FileStreamParser<ExcelFileAppendBean> templateParser = FileStreamParser.ofClass(ExcelFileAppendBean.class, "append");
 
     public ExcelTest() {
@@ -33,17 +29,7 @@ class ExcelTest extends ExcelBaseTest<ExcelTemplateBean> {
     }
 
     @Test
-    @Order(0)
-    @Execution(ExecutionMode.SAME_THREAD)
-    void testWrite() throws Throwable {
-        this.file.delete();
-        Assertions.assertFalse(this.file.exists());
-        this.parser.write(this.testFileName, this.values.stream());
-        Assertions.assertTrue(this.file.exists());
-    }
-
-    @Test
-    @Order(1)
+    @Order(2)
     @Execution(ExecutionMode.SAME_THREAD)
     void testWriteEmptyReadWithTemplate() throws Throwable {
         String suffixFileName = this.getTestFileName("");
@@ -61,7 +47,7 @@ class ExcelTest extends ExcelBaseTest<ExcelTemplateBean> {
     }
 
     @Test
-    @Order(2)
+    @Order(3)
     @Execution(ExecutionMode.SAME_THREAD)
     void testWriteReadWithTemplate() throws Throwable {
         String suffixFileName = this.getTestFileName("");
@@ -71,7 +57,7 @@ class ExcelTest extends ExcelBaseTest<ExcelTemplateBean> {
         addedBean.setString0("added");
         addedBean.setInteger1(123456789);
         addedBean.setLong2(2000L);
-        addedBean.setDate6(Date.from(LocalDate.of(2023, 02, 03)
+        addedBean.setDate6(Date.from(LocalDate.of(2023, 2, 3)
                                               .atStartOfDay()
                                               .toInstant(ZoneOffset.UTC)));
 
@@ -81,7 +67,7 @@ class ExcelTest extends ExcelBaseTest<ExcelTemplateBean> {
         addedTBean.setString0("added");
         addedTBean.setInteger1(123456789);
         addedTBean.setLong2(2000L);
-        addedTBean.setDate6(Date.from(LocalDate.of(2023, 02, 03)
+        addedTBean.setDate6(Date.from(LocalDate.of(2023, 2, 3)
                                                .atStartOfDay()
                                                .toInstant(ZoneOffset.UTC)));
         this.values.add(addedTBean);
@@ -92,13 +78,5 @@ class ExcelTest extends ExcelBaseTest<ExcelTemplateBean> {
         Assertions.assertEquals(1, readValues.size());
 
         Assertions.assertTrue(CollectionUtils.isEqualCollection(this.values, this.readFile("")));
-        Assertions.assertTrue(this.file.delete());
-        Assertions.assertFalse(this.file.exists());
-    }
-
-    @Test
-    @Order(20)
-    @Disabled
-    void testRead() throws Throwable {
     }
 }

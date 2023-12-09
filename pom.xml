@@ -75,14 +75,6 @@
                             </includes>
                             <followSymlinks>false</followSymlinks>
                         </fileset>
-                        <fileset>
-                            <!-- remove all xls data -->
-                            <directory>src/</directory>
-                            <includes>
-                                <include>**/*.xls*</include>
-                            </includes>
-                            <followSymlinks>false</followSymlinks>
-                        </fileset>
                     </filesets>
                 </configuration>
             </plugin>

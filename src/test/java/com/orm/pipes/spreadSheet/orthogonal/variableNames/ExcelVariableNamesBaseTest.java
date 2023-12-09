@@ -1,7 +1,7 @@
 package com.orm.pipes.spreadSheet.orthogonal.variableNames;
 
 import com.orm.pipes.baseTest.values.TestBean;
-import com.orm.pipes.spreadSheet.orthogonal.ExcelTestHead;
+import com.orm.pipes.spreadSheet.orthogonal.ExtendedExcelTest;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Order;
@@ -9,11 +9,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
-public abstract class ExcelVariableNamesBaseTest<T extends TestBean> extends ExcelTestHead<T> {
+import java.util.Collections;
+
+public abstract class ExcelVariableNamesBaseTest<T extends TestBean> extends ExtendedExcelTest<T> {
 
     @Test
     @Order(2)
-    void testReadMoreColumns() throws Throwable {
+    void testReadMoreColumns() {
         Assertions.assertThrows(RuntimeException.class, () -> this.readFile("-moreColumns"));
     }
 
@@ -28,5 +30,12 @@ public abstract class ExcelVariableNamesBaseTest<T extends TestBean> extends Exc
     @Execution(ExecutionMode.SAME_THREAD)
     void testReadLessRequiredColumns() throws Throwable {
         Assertions.assertFalse(CollectionUtils.isEqualCollection(this.lessValues, this.readFile("-lessRequiredColumns")));
+    }
+
+    @Test
+    @Order(5)
+    @Execution(ExecutionMode.SAME_THREAD)
+    void testEmptyFile() throws Throwable {
+        this.assertEquals(Collections.emptyList(), this.readFile("-empty"));
     }
 }

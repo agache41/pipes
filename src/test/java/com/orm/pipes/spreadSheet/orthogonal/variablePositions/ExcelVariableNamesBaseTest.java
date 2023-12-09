@@ -1,7 +1,7 @@
 package com.orm.pipes.spreadSheet.orthogonal.variablePositions;
 
 import com.orm.pipes.baseTest.values.TestBean;
-import com.orm.pipes.spreadSheet.orthogonal.ExcelTestHead;
+import com.orm.pipes.spreadSheet.orthogonal.ExtendedExcelTest;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Order;
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
-public abstract class ExcelVariableNamesBaseTest<T extends TestBean> extends ExcelTestHead<T> {
+public abstract class ExcelVariableNamesBaseTest<T extends TestBean> extends ExtendedExcelTest<T> {
 
     @Test
     @Order(3)
