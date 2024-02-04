@@ -97,9 +97,9 @@
     <url>http://maven.apache.org</url>
     <dependencies>
         <dependency>
-            <groupId>com.orm</groupId>
-            <artifactId>annotations</artifactId>
-            <version>1.0</version>
+            <groupId>io.github.agache41</groupId>
+            <artifactId>annotator</artifactId>
+            <version>0.1.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
         <dependency>
