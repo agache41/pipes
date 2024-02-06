@@ -10,12 +10,23 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
+/**
+ * <pre>
+ * The type Spread sheet file reader.
+ * </pre>
+ */
 public class SpreadSheetFileReader implements AnnotablePipe<SpreadSheet.file, File, Workbook> {
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void configure(SpreadSheet.file cfg) {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ThrowingFunction<File, Workbook> function() {
         return file -> {

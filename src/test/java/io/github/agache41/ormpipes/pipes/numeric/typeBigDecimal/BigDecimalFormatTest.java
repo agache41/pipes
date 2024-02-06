@@ -47,7 +47,10 @@ public class BigDecimalFormatTest extends BaseFormatTest {
             return BigDecimalPipes.BigDecimalToString.class;
         }
 
-        @Override
+        /**
+* {@inheritDoc}
+*/
+@Override
         public BigDecimalFormatTest.BigDecimalFormatAnnotation get() {
             return new BigDecimalFormatTest.BigDecimalFormatAnnotation();
         }

@@ -12,10 +12,16 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public abstract class AbstractValuesFeeder<T extends TestBean> implements Values<T>, Supplier<T> {
-    @Override
+    /**
+* {@inheritDoc}
+*/
+@Override
     public abstract T get();
 
-    @Override
+    /**
+* {@inheritDoc}
+*/
+@Override
     public List<T> getValues() {
         final T nuller = this.get();
         final T minValue = this.get();
@@ -41,7 +47,10 @@ public abstract class AbstractValuesFeeder<T extends TestBean> implements Values
         return new ArrayList<>(Arrays.asList(nuller, minValue, value));
     }
 
-    @Override
+    /**
+* {@inheritDoc}
+*/
+@Override
     public List<T> getLessValues() {
         final T nuller = this.get();
         final T lessMinValue = this.get();

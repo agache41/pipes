@@ -9,9 +9,17 @@ import io.github.agache41.ormpipes.pipes.csv.csvFile.impl.CSVFileHandler;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+/**
+ * <pre>
+ * The type Csv file reader.
+ * </pre>
+ */
 public class CSVFileReader extends CSVFileBase implements AnnotablePipe<CSVFile, Stream<String[]>, Stream<?>> {
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public StrongType getInputType() {
         return StrongType.of(Stream.class)
@@ -19,6 +27,9 @@ public class CSVFileReader extends CSVFileBase implements AnnotablePipe<CSVFile,
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public StrongType getOutputType() {
         return StrongType.of(Stream.class)
@@ -26,6 +37,9 @@ public class CSVFileReader extends CSVFileBase implements AnnotablePipe<CSVFile,
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ThrowingFunction<Stream<String[]>, Stream<?>> function() {
         return inputStream -> {
@@ -37,7 +51,8 @@ public class CSVFileReader extends CSVFileBase implements AnnotablePipe<CSVFile,
         };
     }
 
-    private Object doLine(CSVFileHandler handler, String[] line) throws Throwable {
+    private Object doLine(CSVFileHandler handler,
+                          String[] line) throws Throwable {
         handler.lineNumber++;
         if (handler.useFirstLineAsHeader) {
             handler.setHeader(line);

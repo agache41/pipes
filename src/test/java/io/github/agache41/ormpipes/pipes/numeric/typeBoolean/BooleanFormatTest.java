@@ -1,13 +1,12 @@
 package io.github.agache41.ormpipes.pipes.numeric.typeBoolean;
 
-import io.github.agache41.ormpipes.config.Annotations;
+import io.github.agache41.ormpipes.config.Constants;
 import io.github.agache41.ormpipes.pipe.AnnotablePipe;
 import io.github.agache41.ormpipes.pipes.csv.csvField.CSVAccessor;
 
 import io.github.agache41.ormpipes.pipes.numeric.BaseFormatTest;
 import io.github.agache41.ormpipes.pipes.numeric.BaseTestConfigFor;
 import io.github.agache41.ormpipes.pipes.typeString.TypeString;
-import io.github.agache41.ormpipes.pipes.numeric.typeBoolean.TypeBoolean;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -45,17 +44,26 @@ public class BooleanFormatTest extends BaseFormatTest {
         @CSVAccessor(name = "nullOrUnknownIsFalse", position = 10)
         private Boolean nullOrUnknownIsFalse;
 
-        @Override
+        /**
+* {@inheritDoc}
+*/
+@Override
         public String[] value() {
             return this.values;
         }
 
-        @Override
+        /**
+* {@inheritDoc}
+*/
+@Override
         public String[] falseValue() {
             return this.falseValues;
         }
 
-        @Override
+        /**
+* {@inheritDoc}
+*/
+@Override
         public boolean nullOrUnknownIsFalse() {
             return this.nullOrUnknownIsFalse;
         }
@@ -78,14 +86,17 @@ public class BooleanFormatTest extends BaseFormatTest {
         }
 
         public String view() {
-            return Annotations.DEFAULT;
+            return Constants.DEFAULT;
         }
 
         public Class<TypeBoolean.New> annotationType() {
             return TypeBoolean.New.class;
         }
 
-        @Override
+        /**
+* {@inheritDoc}
+*/
+@Override
         public Object aggregateArguments(ArgumentsAccessor argumentsAccessor, ParameterContext parameterContext) throws ArgumentsAggregationException {
             BooleanFormatAnnotation result = (BooleanFormatAnnotation) super.aggregateArguments(argumentsAccessor, parameterContext);
             result.setValues(this.splitNullable(argumentsAccessor.getString(8)));
@@ -94,7 +105,10 @@ public class BooleanFormatTest extends BaseFormatTest {
             return result;
         }
 
-        @Override
+        /**
+* {@inheritDoc}
+*/
+@Override
         public BooleanFormatAnnotation get() {
             return new BooleanFormatAnnotation();
         }

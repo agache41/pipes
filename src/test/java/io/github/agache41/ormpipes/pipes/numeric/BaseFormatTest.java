@@ -7,14 +7,14 @@ import io.github.agache41.ormpipes.pipes.typeFile.FilePipes;
 import io.github.agache41.ormpipes.pipes.zip.zipArchive.Zip;
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.jboss.logging.Logger;
 import org.junit.jupiter.api.TestInstance;
 import org.opentest4j.AssertionFailedError;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
 
-import static io.github.agache41.ormpipes.config.Annotations.DEFAULT;
+import static io.github.agache41.ormpipes.config.Constants.DEFAULT;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
@@ -22,10 +22,10 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 public abstract class BaseFormatTest {
 
 
-    protected static Logger logger = LogManager.getLogger(BaseFormatTest.class);
+    protected static Logger logger = Logger.getLogger(BaseFormatTest.class);
 
     protected void doRegressionTest(Class<? extends BaseTestConfigFor> configClass) throws Throwable {
-        logger.info("Starting big Csv Test on " + configClass.getSimpleName());
+        logger.infof("Starting big Csv Test on " + configClass.getSimpleName());
         String fileSuffix = "";
         CSVFile.StringStreamParser.ofClass(configClass, fileSuffix.isEmpty() ? "zip" : DEFAULT)
                                   .read(this.testFileName(fileSuffix))
@@ -72,7 +72,7 @@ public abstract class BaseFormatTest {
         String testFileName = this.getClass()
                                   .getCanonicalName()
                                   .replace('.', '/') + suffix + (suffix.isEmpty() ? Zip.Archive.extension : CSVFile.extension);
-        logger.info("Testing {}", testFileName);
+        logger.infof("Testing %s", testFileName);
         return testFileName;
     }
 

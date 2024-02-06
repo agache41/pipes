@@ -20,6 +20,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * <pre>
+ * The type Abstract formatter is the base type for all formatter implementations.
+ * </pre>
+ *
+ * @param <A>      the type parameter
+ * @param <Input>  the type parameter
+ * @param <Output> the type parameter
+ */
 public abstract class AbstractFormatter<A extends Annotation, Input, Output> implements AnnotablePipe<A, Input, Output> {
 
     private static final Set<String> AVAILABLE_LANGUAGE_TAGS = Stream.of(Locale.getAvailableLocales())
@@ -28,11 +37,41 @@ public abstract class AbstractFormatter<A extends Annotation, Input, Output> imp
                                                                      .collect(Collectors.toSet());
 
     private static final Map<String, DateTimeFormatter> staticDateTimeFormatters = new HashMap<>();
+    /**
+     * <pre>
+     * If the simple implementation has to be used.
+     * </pre>
+     */
     protected Boolean simple;
+    /**
+     * <pre>
+     * If the formatting process is Null safe. (null input returns null output)
+     * </pre>
+     */
     protected Boolean nullSafe;
+    /**
+     * <pre>
+     * If the formatting process is Blank safe. (Blank input returns Blank output)
+     * </pre>
+     */
     protected Boolean blankSafe;
+    /**
+     * <pre>
+     * If the formatting process will not throw an exception.
+     * </pre>
+     */
     protected Boolean noException;
+    /**
+     * <pre>
+     * The Format.
+     * </pre>
+     */
     protected String format;
+    /**
+     * <pre>
+     * The Language tag.
+     * </pre>
+     */
     protected String languageTag;
 
     {
@@ -53,6 +92,9 @@ public abstract class AbstractFormatter<A extends Annotation, Input, Output> imp
         staticDateTimeFormatters.put("RFC_1123_DATE_TIME", DateTimeFormatter.RFC_1123_DATE_TIME);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void configure(A cfg) {
         Annotate<A> cfgAnnotator = Annotator.of(cfg);
@@ -71,11 +113,12 @@ public abstract class AbstractFormatter<A extends Annotation, Input, Output> imp
      * Returns a NumberFormat instance configured for the given format and language Tag
      * for Integer parsing.
      *
-     * @param format
-     * @param languageTag
-     * @return
+     * @param format      the format
+     * @param languageTag the language tag
+     * @return integer number format
      */
-    protected NumberFormat getIntegerNumberFormat(String format, String languageTag) {
+    protected NumberFormat getIntegerNumberFormat(String format,
+                                                  String languageTag) {
         NumberFormat numberFormat = this.getNumberFormat(format, languageTag);
         numberFormat.setParseIntegerOnly(true);
         return numberFormat;
@@ -88,19 +131,24 @@ public abstract class AbstractFormatter<A extends Annotation, Input, Output> imp
      * the method will try to use the default initialization.
      * The pattern is considered to be non-localized.
      *
-     * @param format
-     * @param languageTag
-     * @return
+     * @param format      the format
+     * @param languageTag the language tag
+     * @return number format
      */
-    protected NumberFormat getNumberFormat(String format, String languageTag) {
+    protected NumberFormat getNumberFormat(String format,
+                                           String languageTag) {
         final Locale locale = this.getLocale(languageTag);
         final String _format = this.getOrDefault(format, Settings.NUMERIC_INTEGER_FORMAT);
         if (locale != null) {
-            if (this.isNullEmptyOrDefault(_format)) return NumberFormat.getInstance(locale);
-            else
+            if (this.isNullEmptyOrDefault(_format)) {
+                return NumberFormat.getInstance(locale);
+            } else {
                 return new DecimalFormat(_format, DecimalFormatSymbols.getInstance(locale));
+            }
         } else {
-            if (this.isNullEmptyOrDefault(_format)) return new DecimalFormat();
+            if (this.isNullEmptyOrDefault(_format)) {
+                return new DecimalFormat();
+            }
             return new DecimalFormat(_format);
         }
     }
@@ -112,16 +160,18 @@ public abstract class AbstractFormatter<A extends Annotation, Input, Output> imp
      * the method will try to use the default initialization.
      * The pattern is considered to be non-localized.
      *
-     * @param format
-     * @param languageTag
-     * @return
+     * @param format      the format
+     * @param languageTag the language tag
+     * @return big decimal number format
      */
-    protected DecimalFormat getBigDecimalNumberFormat(String format, String languageTag) {
+    protected DecimalFormat getBigDecimalNumberFormat(String format,
+                                                      String languageTag) {
         DecimalFormat decimalFormat;
         final String _format = this.getOrDefault(format, Settings.NUMERIC_INTEGER_FORMAT);
         final Locale locale = this.getLocale(languageTag);
-        if (this.isNullEmptyOrDefault(_format)) decimalFormat = new DecimalFormat();
-        else if (locale != null) {
+        if (this.isNullEmptyOrDefault(_format)) {
+            decimalFormat = new DecimalFormat();
+        } else if (locale != null) {
             decimalFormat = new DecimalFormat(_format, DecimalFormatSymbols.getInstance(locale));
         } else {
             decimalFormat = new DecimalFormat(_format);
@@ -152,20 +202,27 @@ public abstract class AbstractFormatter<A extends Annotation, Input, Output> imp
      * which will return the corresponding static field from the DateTimeFormatter class.
      * If no languageTag or zoneId are provided (empty) then no localization and no zoneId will be used.
      *
-     * @param format
-     * @param languageTag
-     * @param zoneId
-     * @return
+     * @param format      the format
+     * @param languageTag the language tag
+     * @param zoneId      the zone id
+     * @return date time formatter
      */
-    protected DateTimeFormatter getDateTimeFormatter(String format, String languageTag, String zoneId) {
+    protected DateTimeFormatter getDateTimeFormatter(String format,
+                                                     String languageTag,
+                                                     String zoneId) {
         format = this.getOrDefault(format, Settings.DATE_TIME_FORMAT);
-        if (staticDateTimeFormatters.containsKey(format))
+        if (staticDateTimeFormatters.containsKey(format)) {
             return staticDateTimeFormatters.get(format);
+        }
         DateTimeFormatter result = DateTimeFormatter.ofPattern(format);
         Locale locale = this.getLocale(languageTag);
-        if (locale != null) result = result.withLocale(locale);
+        if (locale != null) {
+            result = result.withLocale(locale);
+        }
         ZoneId zoneID = this.getZoneId(zoneId);
-        if (zoneID != null) result = result.withZone(zoneID);
+        if (zoneID != null) {
+            result = result.withZone(zoneID);
+        }
         return result;
     }
 
@@ -174,17 +231,28 @@ public abstract class AbstractFormatter<A extends Annotation, Input, Output> imp
      * If any of the parameter is empty, then the configuration value for him will be queried.
      * If the Locale is not specified, only the format will be used.
      *
-     * @param format
-     * @param languageTag
-     * @return
+     * @param format      the format
+     * @param languageTag the language tag
+     * @return simple date format
      */
-    protected SimpleDateFormat getSimpleDateFormat(String format, String languageTag) {
+    protected SimpleDateFormat getSimpleDateFormat(String format,
+                                                   String languageTag) {
         format = this.getOrDefault(format, Settings.DATE_TIME_FORMAT);
         Locale locale = this.getLocale(languageTag);
-        if (locale == null) return new SimpleDateFormat(format);
+        if (locale == null) {
+            return new SimpleDateFormat(format);
+        }
         return new SimpleDateFormat(format, locale);
     }
 
+    /**
+     * <pre>
+     * Gets decimal format symbols.
+     * </pre>
+     *
+     * @param languageTag the language tag
+     * @return the decimal format symbols
+     */
     protected DecimalFormatSymbols getDecimalFormatSymbols(String languageTag) {
         return DecimalFormatSymbols.getInstance(this.getLocale(languageTag));
     }
@@ -197,13 +265,17 @@ public abstract class AbstractFormatter<A extends Annotation, Input, Output> imp
      * If the value is not empty, it will be checked against the available values and an IllegalArgumentException will be thrown if unknown.
      * If the value is valid, the specified Locale will be returned.
      *
-     * @param languageTag
-     * @return
+     * @param languageTag the language tag
+     * @return locale locale
      */
     protected Locale getLocale(String languageTag) {
         languageTag = this.getOrDefault(languageTag, Settings.LANGUAGE_TAG);
-        if (languageTag.isEmpty()) return null; // no localization
-        if (Settings.DEFAULT.equalsIgnoreCase(languageTag)) return Locale.getDefault();
+        if (languageTag.isEmpty()) {
+            return null; // no localization
+        }
+        if (Settings.DEFAULT.equalsIgnoreCase(languageTag)) {
+            return Locale.getDefault();
+        }
         if (!AVAILABLE_LANGUAGE_TAGS.contains(languageTag.toLowerCase())) {
             throw new IllegalArgumentException("languageTag " + languageTag + " is not implemented on this platform.");
         }
@@ -216,20 +288,38 @@ public abstract class AbstractFormatter<A extends Annotation, Input, Output> imp
      * If the value is then null or empty, null will be returned, so no localization.
      * If the value is DEFAULT (="default"), then the default machine instance will be returned.
      *
-     * @param zoneId
-     * @return
+     * @param zoneId the zone id
+     * @return zone id
      */
     protected ZoneId getZoneId(String zoneId) {
         zoneId = this.getOrDefault(zoneId, Settings.ZONE_ID);
-        if (zoneId.isEmpty()) return null; // no Zone
-        if (Settings.DEFAULT.equalsIgnoreCase(zoneId)) return ZoneId.systemDefault();
+        if (zoneId.isEmpty()) {
+            return null; // no Zone
+        }
+        if (Settings.DEFAULT.equalsIgnoreCase(zoneId)) {
+            return ZoneId.systemDefault();
+        }
         return ZoneId.of(zoneId);
     }
 
-    protected String getOrDefault(String value, Settings key) {
-        if (this.isNullOrEmpty(value)) value = Configuration.getInstance()
-                                                            .get(Settings.NUMERIC_INTEGER_FORMAT);
-        if (this.isNullOrEmpty(value)) return "";
+    /**
+     * <pre>
+     * Gets or default.
+     * </pre>
+     *
+     * @param value the value
+     * @param key   the key
+     * @return the or default
+     */
+    protected String getOrDefault(String value,
+                                  Settings key) {
+        if (this.isNullOrEmpty(value)) {
+            value = Configuration.getInstance()
+                                 .get(Settings.NUMERIC_INTEGER_FORMAT);
+        }
+        if (this.isNullOrEmpty(value)) {
+            return "";
+        }
         return value;
     }
 

@@ -1,11 +1,11 @@
 package io.github.agache41.ormpipes.pipes.encoding;
 
-import io.github.agache41.ormpipes.config.Annotations;
+import io.github.agache41.ormpipes.config.Constants;
 import io.github.agache41.ormpipes.pipe.DualPipe;
 import io.github.agache41.ormpipes.pipe.registry.PipeRegistry;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 
@@ -14,7 +14,7 @@ import java.io.*;
 @Nested
 public abstract class BaseTestBean {
     public static final String TARGET_TEST_CLASSES = "target/test-classes";
-    private static final Logger logger = LogManager.getLogger(BaseTestBean.class);
+    private static final Logger logger = Logger.getLogger(BaseTestBean.class);
     private final String readPath;
     private final String writePath;
     private final String expected;
@@ -28,7 +28,7 @@ public abstract class BaseTestBean {
     }
 
     public String read(InputStream is) throws Throwable {
-        try (Reader reader = (Reader) PipeRegistry.buildPipeFrom(this, Annotations.DEFAULT, DualPipe.READ, false)
+        try (Reader reader = (Reader) PipeRegistry.buildPipeFrom(this, Constants.DEFAULT, DualPipe.READ, false)
                                                   .function()
                                                   .apply(is)) {
             return IOUtils.toString(reader);
@@ -36,7 +36,7 @@ public abstract class BaseTestBean {
     }
 
     public String readAuto(InputStream is) throws Throwable {
-        try (Reader reader = (Reader) PipeRegistry.buildPipeFrom(this, Annotations.DEFAULT, DualPipe.READ, false)
+        try (Reader reader = (Reader) PipeRegistry.buildPipeFrom(this, Constants.DEFAULT, DualPipe.READ, false)
                                                   .function()
                                                   .apply(is)) {
             return IOUtils.toString(reader);
@@ -45,7 +45,7 @@ public abstract class BaseTestBean {
 
     public void write(String input,
                       OutputStream os) throws Throwable {
-        try (Writer writer = (Writer) PipeRegistry.buildPipeFrom(this, Annotations.DEFAULT, DualPipe.WRITE, true)
+        try (Writer writer = (Writer) PipeRegistry.buildPipeFrom(this, Constants.DEFAULT, DualPipe.WRITE, true)
                                                   .function()
                                                   .apply(os)) {
             IOUtils.write(input,
@@ -54,15 +54,15 @@ public abstract class BaseTestBean {
     }
 
     public String read(String path) throws Throwable {
-        logger.info("reading from path:{}", path);
+        logger.infof("reading from path:%s", path);
         File file = new File(TARGET_TEST_CLASSES,
                 path);
         return this.read(new FileInputStream(file));
     }
 
     public String readAuto(String path) throws Throwable {
-        logger.info(
-                "reading from path:{}",
+        logger.infof(
+                "reading from path:%s",
                 path);
         File file = new File(TARGET_TEST_CLASSES,
                 path);
@@ -71,8 +71,8 @@ public abstract class BaseTestBean {
 
     public void write(String input,
                       String path) throws Throwable {
-        logger.info(
-                "writing in path:{}",
+        logger.infof(
+                "writing in path:%s",
                 path);
         File file = new File(TARGET_TEST_CLASSES,
                 path);
@@ -84,7 +84,7 @@ public abstract class BaseTestBean {
     }
 
     public BaseTestBean doReadTest() throws Throwable {
-        logger.info(
+        logger.infof(
                 "start reading test");
         String actual = this.read(this.readPath);
         Assertions.assertEquals(this.expected,
@@ -93,20 +93,20 @@ public abstract class BaseTestBean {
         String actualAuto = this.readAuto(this.readPath);
         Assertions.assertEquals(this.expected,
                 actualAuto);
-        logger.info(
+        logger.infof(
                 "end reading test");
         return this;
     }
 
     public BaseTestBean doWriteTest() throws Throwable {
-        logger.info(
+        logger.infof(
                 "start writing test");
         this.write(this.expected,
                 this.writePath);
         String actual = this.read(this.writePath);
         Assertions.assertEquals(this.expected,
                 actual);
-        logger.info(
+        logger.infof(
                 "end writing test");
         return this;
     }

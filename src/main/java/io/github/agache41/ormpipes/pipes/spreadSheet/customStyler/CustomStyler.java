@@ -6,7 +6,15 @@ import io.github.agache41.ormpipes.pipes.spreadSheet.SpreadSheet;
 import io.github.agache41.ormpipes.pipes.spreadSheet.base.Styler;
 import org.apache.poi.ss.usermodel.Cell;
 
+/**
+ * <pre>
+ * The type Custom styler.
+ * </pre>
+ */
 public class CustomStyler extends Styler<SpreadSheet.CustomStyle> implements AnnotablePipe<SpreadSheet.CustomStyle, ThrowingConsumer<Cell>, ThrowingConsumer<Cell>> {
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void configure(SpreadSheet.CustomStyle cfg) {
         super.configure(cfg);

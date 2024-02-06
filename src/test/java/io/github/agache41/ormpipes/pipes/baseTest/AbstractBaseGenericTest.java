@@ -100,7 +100,10 @@ public abstract class AbstractBaseGenericTest<T extends TestBean, Output> extend
         return readOutput;
     }
 
-    @Override
+    /**
+* {@inheritDoc}
+*/
+@Override
     public T get() {
         try {
             return this.constructor.newInstance();
@@ -109,12 +112,18 @@ public abstract class AbstractBaseGenericTest<T extends TestBean, Output> extend
         }
     }
 
-    @Override
+    /**
+* {@inheritDoc}
+*/
+@Override
     public List<T> getValues() {
         return this.values;
     }
 
-    @Override
+    /**
+* {@inheritDoc}
+*/
+@Override
     public List<T> getLessValues() {
         return this.lessValues;
     }

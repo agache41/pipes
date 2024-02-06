@@ -13,18 +13,32 @@ import java.util.stream.StreamSupport;
 
 import static io.github.agache41.ormpipes.functional.ThrowingFunction.wrap;
 
+/**
+ * <pre>
+ * The type Sheet reader.
+ * </pre>
+ */
 public class SheetReader extends SheetBase implements AnnotablePipe<SpreadSheet.sheet, Sheet, Stream<?>> {
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public StrongType getInputType() {
         return StrongType.of(Sheet.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public StrongType getOutputType() {
         return StrongType.of(Stream.class)
                          .parameterizedWith(this.onClass);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ThrowingFunction<Sheet, Stream<?>> function() {
         return sheet -> {
@@ -39,7 +53,8 @@ public class SheetReader extends SheetBase implements AnnotablePipe<SpreadSheet.
         };
     }
 
-    private Object processLine(SheetHandler handler, Row row) throws Throwable {
+    private Object processLine(SheetHandler handler,
+                               Row row) throws Throwable {
         handler.lineNumber++;
         if (handler.useFirstLineAsHeader) {
             handler.setHeader(this.getHeader(row));
@@ -47,8 +62,9 @@ public class SheetReader extends SheetBase implements AnnotablePipe<SpreadSheet.
             this.doSheetSettings(handler);
             return null;
         }
-        if (!this.cfg.disableLineValidation())
+        if (!this.cfg.disableLineValidation()) {
             handler.validateLine(row.getPhysicalNumberOfCells());
+        }
         Object result = this.get();
         for (int index = 0; index < handler.positionIndex.length; index++) {
             handler.readPipes[index]
@@ -59,12 +75,15 @@ public class SheetReader extends SheetBase implements AnnotablePipe<SpreadSheet.
     }
 
     private void doSheetSettings(SheetHandler handler) {
-        if (this.offsetY < 0)
+        if (this.offsetY < 0) {
             this.offsetY = 0;
-        if (this.offsetX > 0)
+        }
+        if (this.offsetX > 0) {
             for (int index = 0; index < handler.positionIndex.length; index++)
                 handler.positionIndex[index] += this.offsetX;
-        else this.offsetX = 0;
+        } else {
+            this.offsetX = 0;
+        }
     }
 }
 

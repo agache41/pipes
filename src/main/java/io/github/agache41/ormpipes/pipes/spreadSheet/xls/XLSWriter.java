@@ -8,11 +8,22 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import java.io.OutputStream;
 
+/**
+ * <pre>
+ * The type Xls writer.
+ * </pre>
+ */
 public class XLSWriter implements AnnotablePipe<SpreadSheet.xls, ThrowingConsumer<HSSFWorkbook>, ThrowingConsumer<OutputStream>> {
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void configure(SpreadSheet.xls cfg) {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ThrowingFunction<ThrowingConsumer<HSSFWorkbook>, ThrowingConsumer<OutputStream>> function() {
         return workbookThrowingConsumer -> outputStream -> {

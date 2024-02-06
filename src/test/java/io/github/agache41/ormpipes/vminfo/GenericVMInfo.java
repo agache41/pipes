@@ -13,17 +13,26 @@ public class GenericVMInfo implements VMInfo {
     public static String[] LANGUAGE_TAGS_SMALL =
             {"", "en-US", "de-DE", "fr-FR"};
 
-    @Override
+    /**
+* {@inheritDoc}
+*/
+@Override
     public String getVmVersion() {
         return "11&8";
     }
 
-    @Override
+    /**
+* {@inheritDoc}
+*/
+@Override
     public Stream<String> getLanguageTags() {
         return Stream.of(LANGUAGE_TAGS);
     }
 
-    @Override
+    /**
+* {@inheritDoc}
+*/
+@Override
     public int countLanguageTags() {
         return LANGUAGE_TAGS.length;
     }
@@ -40,17 +49,26 @@ public class GenericVMInfo implements VMInfo {
                  "sq", "sq-AL", "sr", "sr-BA", "sr-CS", "sr-Latn", "sr-Latn-BA", "sr-Latn-ME", "sr-Latn-RS", "sr-ME", "sr-RS", "sv", "sv-SE", "th", "th-TH",
                  "th-TH-u-nu-thai-x-lvariant-TH", "tr", "tr-TR", "uk", "uk-UA", "und", "vi", "vi-VN", "zh", "zh-CN", "zh-HK", "zh-SG", "zh-TW"};
 
-        @Override
+        /**
+* {@inheritDoc}
+*/
+@Override
         public String getVmVersion() {
             return "25.351-b10";
         }
 
-        @Override
+        /**
+* {@inheritDoc}
+*/
+@Override
         public Stream<String> getLanguageTags() {
             return Stream.of(LANGUAGE_TAGS);
         }
 
-        @Override
+        /**
+* {@inheritDoc}
+*/
+@Override
         public int countLanguageTags() {
             return LANGUAGE_TAGS.length;
         }
@@ -101,17 +119,26 @@ public class GenericVMInfo implements VMInfo {
                  "yi-001", "yo", "yo-BJ", "yo-NG", "yue", "yue-Hans", "yue-Hans-CN", "yue-Hant", "yue-Hant-HK", "zgh", "zgh-MA", "zh", "zh-CN", "zh-HK", "zh-Hans", "zh-Hans-CN",
                  "zh-Hans-HK", "zh-Hans-MO", "zh-Hans-SG", "zh-Hant", "zh-Hant-HK", "zh-Hant-MO", "zh-Hant-TW", "zh-SG", "zh-TW", "zu", "zu-ZA"};
 
-        @Override
+        /**
+* {@inheritDoc}
+*/
+@Override
         public String getVmVersion() {
             return "11.0.16+11-LTS-199";
         }
 
-        @Override
+        /**
+* {@inheritDoc}
+*/
+@Override
         public Stream<String> getLanguageTags() {
             return Stream.of(LANGUAGE_TAGS);
         }
 
-        @Override
+        /**
+* {@inheritDoc}
+*/
+@Override
         public int countLanguageTags() {
             return LANGUAGE_TAGS.length;
         }

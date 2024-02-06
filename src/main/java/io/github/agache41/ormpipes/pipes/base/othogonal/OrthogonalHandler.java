@@ -1,22 +1,33 @@
 package io.github.agache41.ormpipes.pipes.base.othogonal;
 
+import io.github.agache41.annotator.accessor.Accessor;
 import io.github.agache41.annotator.annotator.Annotate;
+import io.github.agache41.annotator.annotator.Annotator;
+import io.github.agache41.annotator.matcher.HaveAnnotation;
 import io.github.agache41.ormpipes.functional.ThrowingFunction;
 import io.github.agache41.ormpipes.pipes.base.othogonal.enums.Model;
 import io.github.agache41.ormpipes.pipes.base.othogonal.enums.NamingMethod;
 import io.github.agache41.ormpipes.pipes.base.othogonal.enums.PositionMethod;
 import io.github.agache41.ormpipes.pipes.csv.csvFile.CSVFile;
-import io.github.agache41.annotator.accessor.Accessor;
-import io.github.agache41.annotator.annotator.Annotator;
-
-import io.github.agache41.annotator.matcher.HaveAnnotation;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.jboss.logging.Logger;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * <pre>
+ * The type Orthogonal handler.
+ * </pre>
+ *
+ * @param <ClassCfg>    the type parameter
+ * @param <FieldCfg>    the type parameter
+ * @param <Entry>       the type parameter
+ * @param <InputRead>   the type parameter
+ * @param <OutputRead>  the type parameter
+ * @param <InputWrite>  the type parameter
+ * @param <OutputWrite> the type parameter
+ */
 public abstract class OrthogonalHandler< //
         ClassCfg extends Annotation, //
         FieldCfg extends Annotation, //
@@ -27,26 +38,102 @@ public abstract class OrthogonalHandler< //
         OutputWrite> //
 {
 
-    protected static final Logger logger = LogManager.getLogger(CSVFile.class);
+    /**
+     * <pre>
+     * The constant logger.
+     * </pre>
+     */
+    protected static final Logger logger = Logger.getLogger(CSVFile.class);
     private final Class<?> onClass;
     private final PositionMethod positionMethod;
     private final NamingMethod namingMethod;
     private final Model model;
 
+    /**
+     * <pre>
+     * The Use first line as header.
+     * </pre>
+     */
     public boolean useFirstLineAsHeader;
+    /**
+     * <pre>
+     * The Position index.
+     * </pre>
+     */
     public int[] positionIndex;
+    /**
+     * <pre>
+     * The Max position.
+     * </pre>
+     */
     public int maxPosition = 0;
+    /**
+     * <pre>
+     * The Line number.
+     * </pre>
+     */
     public int lineNumber = 0;
+    /**
+     * <pre>
+     * The Read pipes.
+     * </pre>
+     */
     public ThrowingFunction<InputRead, OutputRead>[] readPipes;
+    /**
+     * <pre>
+     * The Header.
+     * </pre>
+     */
     public String[] header;
+    /**
+     * <pre>
+     * The Valid header.
+     * </pre>
+     */
     public boolean validHeader = false;
+    /**
+     * <pre>
+     * The Write pipes.
+     * </pre>
+     */
     public ThrowingFunction<InputWrite, OutputWrite>[] writePipes;
+    /**
+     * <pre>
+     * The Entry list.
+     * </pre>
+     */
     public List<Entry> entryList;
+    /**
+     * <pre>
+     * The Valid positions.
+     * </pre>
+     */
     protected boolean validPositions = false;
+    /**
+     * <pre>
+     * The Valid names.
+     * </pre>
+     */
     protected boolean validNames = false;
+    /**
+     * <pre>
+     * The Valid pipes.
+     * </pre>
+     */
     protected boolean validPipes = false;
 
-    public OrthogonalHandler(Class<?> onClass, ClassCfg classCfg, Class<FieldCfg> fieldCfgClass) {
+    /**
+     * <pre>
+     * Instantiates a new Orthogonal handler.
+     * </pre>
+     *
+     * @param onClass       the on class
+     * @param classCfg      the class cfg
+     * @param fieldCfgClass the field cfg class
+     */
+    public OrthogonalHandler(Class<?> onClass,
+                             ClassCfg classCfg,
+                             Class<FieldCfg> fieldCfgClass) {
         this.onClass = onClass;
         Annotate<ClassCfg> cfgAnnotator = Annotator.of(classCfg);
         this.header = cfgAnnotator.getAccessor("header")
@@ -62,9 +149,31 @@ public abstract class OrthogonalHandler< //
         this.initialize(fieldCfgClass);
     }
 
-    protected abstract Entry newEntry(Accessor<?> accessor, NamingMethod namingMethod, PositionMethod positionMethod);
+    /**
+     * <pre>
+     * New entry entry.
+     * </pre>
+     *
+     * @param accessor       the accessor
+     * @param namingMethod   the naming method
+     * @param positionMethod the position method
+     * @return the entry
+     */
+    protected abstract Entry newEntry(Accessor<?> accessor,
+                                      NamingMethod namingMethod,
+                                      PositionMethod positionMethod);
 
-    protected abstract Entry newEntry(String name, int position);
+    /**
+     * <pre>
+     * New entry entry.
+     * </pre>
+     *
+     * @param name     the name
+     * @param position the position
+     * @return the entry
+     */
+    protected abstract Entry newEntry(String name,
+                                      int position);
 
 
     private void initialize(Class<FieldCfg> fieldCfgClass) {
@@ -89,9 +198,11 @@ public abstract class OrthogonalHandler< //
 
     //todo: add position ordering in Accessor
     private void completeFieldPositions() {
-        if (this.positionMethod == PositionMethod.Fields) for (int index = 0; index < this.entryList.size(); index++) {
-            this.entryList.get(index)
-                          .setPosition(index);
+        if (this.positionMethod == PositionMethod.Fields) {
+            for (int index = 0; index < this.entryList.size(); index++) {
+                this.entryList.get(index)
+                              .setPosition(index);
+            }
         }
     }
 
@@ -99,12 +210,20 @@ public abstract class OrthogonalHandler< //
         Set<String> names = new HashSet<>(this.entryList.size());
         for (Entry entry : this.entryList) {
             String name = entry.getName();
-            if (name.isEmpty()) if (this.model.hasValidNames())
-                throw new RuntimeException(" Found missing name (" + entry + "): please check you class!");
-            else return;
-            if (names.contains(name)) if (this.model.hasValidNames())
-                throw new RuntimeException(" Found duplicate " + name + " (" + entry + "): please check you class!");
-            else return;
+            if (name.isEmpty()) {
+                if (this.model.hasValidNames()) {
+                    throw new RuntimeException(" Found missing name (" + entry + "): please check you class!");
+                } else {
+                    return;
+                }
+            }
+            if (names.contains(name)) {
+                if (this.model.hasValidNames()) {
+                    throw new RuntimeException(" Found duplicate " + name + " (" + entry + "): please check you class!");
+                } else {
+                    return;
+                }
+            }
             names.add(name);
         }
         names.clear();
@@ -117,22 +236,28 @@ public abstract class OrthogonalHandler< //
             Integer position = this.entryList.get(index)
                                              .getPosition();
             if (Accessor.NO_POSITION == position) {
-                if (this.model.hasValidPositions())
+                if (this.model.hasValidPositions()) {
                     throw new RuntimeException(" Found missing position (" + this.entryList.get(index)
                                                                                            .toString() + "): please check you class!");
-                else return;
+                } else {
+                    return;
+                }
             }
             if (positions.contains(position)) {
-                if (this.model.hasValidPositions())
+                if (this.model.hasValidPositions()) {
                     throw new RuntimeException(" Found duplicate position (" + this.entryList.get(index)
                                                                                              .toString() + "): please check you class!");
-                else return;
+                } else {
+                    return;
+                }
             }
             if (position < 0) {
-                if (this.model.hasValidPositions())
+                if (this.model.hasValidPositions()) {
                     throw new RuntimeException(" Found position out of range (" + this.entryList.get(index)
                                                                                                 .toString() + "): please check you class!");
-                else return;
+                } else {
+                    return;
+                }
             }
             positions.add(position);
         }
@@ -140,6 +265,13 @@ public abstract class OrthogonalHandler< //
         this.validPositions = true;
     }
 
+    /**
+     * <pre>
+     * Sets header.
+     * </pre>
+     *
+     * @param header the header
+     */
     public void setHeader(String[] header) {
         if (header.length == 0) {
             throw new RuntimeException(" Provided empty header!");
@@ -151,12 +283,15 @@ public abstract class OrthogonalHandler< //
             Map<String, Integer> headerMap = new HashMap<>();
             for (int index = 0; index < header.length; index++) {
                 String name = header[index];
-                if (headerMap.containsKey(name))
+                if (headerMap.containsKey(name)) {
                     throw new RuntimeException(" Found duplicate name \"" + name + "\" in header");
+                }
                 headerMap.put(name, index);
             }
             for (Entry entry : this.entryList) {
-                if (!entry.isEnabled()) continue;
+                if (!entry.isEnabled()) {
+                    continue;
+                }
                 String name = entry.getName();
                 if (headerMap.containsKey(name)) {
                     int headerPosition = headerMap.get(name);
@@ -182,7 +317,9 @@ public abstract class OrthogonalHandler< //
                 headerMap.put(index, header[index]);
             }
             for (Entry entry : this.entryList) {
-                if (!entry.isEnabled()) continue;
+                if (!entry.isEnabled()) {
+                    continue;
+                }
                 int position = entry.getPosition();
                 if (headerMap.containsKey(position)) {
                     String headerName = headerMap.get(position);
@@ -206,22 +343,24 @@ public abstract class OrthogonalHandler< //
             for (Entry entry : this.entryList) {
                 if (entry.getPosition() >= header.length || !this.header[entry.getPosition()].equals(entry.getName())) {
                     throw new RuntimeException(" Model.Fixed:found different header in data source : found ("
-                            + Arrays.toString(this.header)
-                            + ") configured ("
-                            + this.entryList.stream()
-                                            .sorted(Comparator.comparing(Entry::getPosition))
-                                            .map(Entry::getName)
-                                            .collect(Collectors.joining(",", "[", "]")) + ")");
+                                               + Arrays.toString(this.header)
+                                               + ") configured ("
+                                               + this.entryList.stream()
+                                                               .sorted(Comparator.comparing(Entry::getPosition))
+                                                               .map(Entry::getName)
+                                                               .collect(Collectors.joining(",", "[", "]")) + ")");
                 }
             }
         }
         this.initializePipes();
-        logger.info(this.toString());
+        logger.debugf(this.toString());
         this.validate();
     }
 
     private void initializePipes() {
-        if (!this.validPositions) return;
+        if (!this.validPositions) {
+            return;
+        }
         this.entryList = this.entryList.stream()
                                        .filter(OrthogonalEntry::isEnabled)
                                        .sorted(Comparator.comparing(OrthogonalEntry::getPosition))
@@ -238,7 +377,9 @@ public abstract class OrthogonalHandler< //
                                          .function();
             this.writePipes[index] = entry.getWritePipe()
                                           .function();
-            if (this.maxPosition < entry.getPosition()) this.maxPosition = entry.getPosition();
+            if (this.maxPosition < entry.getPosition()) {
+                this.maxPosition = entry.getPosition();
+            }
 
             index++;
         }
@@ -255,29 +396,48 @@ public abstract class OrthogonalHandler< //
         }
     }
 
+    /**
+     * <pre>
+     * Validate.
+     * </pre>
+     */
     public void validate() {
         if (!this.validPipes) {
             this.model.verify(this.validNames, this.validPositions);
         }
     }
 
+    /**
+     * <pre>
+     * Validate line.
+     * </pre>
+     *
+     * @param columnCount the column count
+     */
     public void validateLine(int columnCount) {
         if (this.maxPosition >= columnCount) {
             throw new RuntimeException("Invalid too short line " + this.lineNumber + " has only " + columnCount + " column(s)!");
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
         sb.append("[Naming.");
         sb.append(this.namingMethod);
         sb.append(".");
-        if (!this.validNames) sb.append("#in");
+        if (!this.validNames) {
+            sb.append("#in");
+        }
         sb.append("valid/Positioning.");
         sb.append(this.positionMethod);
         sb.append(".");
-        if (!this.validPositions) sb.append("#in");
+        if (!this.validPositions) {
+            sb.append("#in");
+        }
         sb.append("valid.");
         sb.append(Arrays.toString(this.positionIndex));
         sb.append("/Model.");

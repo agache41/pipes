@@ -1,6 +1,6 @@
 package io.github.agache41.ormpipes.pipes.numeric;
 
-import io.github.agache41.ormpipes.config.Annotations;
+import io.github.agache41.ormpipes.config.Constants;
 import io.github.agache41.ormpipes.pipes.csv.csvField.CSVAccessor;
 import io.github.agache41.ormpipes.pipes.csv.csvFile.CSVFile;
 import io.github.agache41.ormpipes.pipes.encoding.EncodingPipes;
@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 public abstract class BaseTestConfigFor<T extends BaseTestConfigFor> implements Annotation, ArgumentsAggregator, Supplier<T> {
 
     public static final String NULL_KEY = "[null]";
-    public static final String EMPTY_ARRAY = "{}";
+    public static final String EMPTY_ARRAY = "%s";
 
     @TypeString.quoted
     @TypeString.nullable(NULL_KEY)
@@ -82,7 +82,10 @@ public abstract class BaseTestConfigFor<T extends BaseTestConfigFor> implements 
         return input.split(",");
     }
 
-    @Override
+    /**
+* {@inheritDoc}
+*/
+@Override
     public Object aggregateArguments(ArgumentsAccessor argumentsAccessor, ParameterContext parameterContext) throws ArgumentsAggregationException {
         T result = this.get();
         result.setInput(argumentsAccessor.getString(0));
@@ -143,6 +146,6 @@ public abstract class BaseTestConfigFor<T extends BaseTestConfigFor> implements 
     }
 
     public String view() {
-        return Annotations.DEFAULT;
+        return Constants.DEFAULT;
     }
 }

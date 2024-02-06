@@ -1,6 +1,6 @@
 package io.github.agache41.ormpipes.pipe.registry;
 
-import io.github.agache41.ormpipes.config.Annotations;
+import io.github.agache41.ormpipes.config.Constants;
 import io.github.agache41.ormpipes.functional.ThrowingConsumer;
 import io.github.agache41.ormpipes.pipe.AnnotablePipe;
 import io.github.agache41.ormpipes.pipes.encoding.IOEncoding;
@@ -32,7 +32,7 @@ public class PipeRegistryCSVTest {
     @Test
     public void testBuildReadPipe() {
         AnnotablePipe<?, String, Stream<?>> readPipe = PipeRegistry.buildPipeFrom(PipeRegistryCSVTest.class,
-                                                                                  Annotations.DEFAULT,
+                                                                                  Constants.DEFAULT,
                                                                                   "read",
                                                                                   false);
         assertNotNull(readPipe);
@@ -41,18 +41,18 @@ public class PipeRegistryCSVTest {
     @Test
     public void testBuildWritePipe() throws Exception {
         AnnotablePipe<?, String, ThrowingConsumer<Stream<?>>> writePipe = PipeRegistry.buildPipeFrom(PipeRegistryCSVTest.class,
-                Annotations.DEFAULT,
-                "write",
-                true);
+                                                                                                     Constants.DEFAULT,
+                                                                                                     "write",
+                                                                                                     true);
         assertNotNull(writePipe);
     }
 
     @Test
     public void testWriteReadPipe() throws Throwable {
         AnnotablePipe<?, Stream<String>, ThrowingConsumer<String>> writePipe = PipeRegistry.buildPipeFrom(PipeRegistryCSVTest.class,
-                Annotations.DEFAULT,
-                "write",
-                true);
+                                                                                                          Constants.DEFAULT,
+                                                                                                          "write",
+                                                                                                          true);
         assertNotNull(writePipe);
         List<String> writeData = new ArrayList<>();
         for (int index = 0; index < 100; index++)
@@ -62,9 +62,9 @@ public class PipeRegistryCSVTest {
                  .accept(TestFile);
 
         AnnotablePipe<?, String, Stream<String>> readPipe = PipeRegistry.buildPipeFrom(PipeRegistryCSVTest.class,
-                Annotations.DEFAULT,
-                "read",
-                false);
+                                                                                       Constants.DEFAULT,
+                                                                                       "read",
+                                                                                       false);
         List<String> readData = readPipe.function()
                                         .apply(TestFile)
                                         .collect(Collectors.toList());

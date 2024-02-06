@@ -36,7 +36,10 @@ public abstract class BaseNumericTestConfigFor<T extends BaseNumericTestConfigFo
         return this.zoneId;
     }
 
-    @Override
+    /**
+* {@inheritDoc}
+*/
+@Override
     public Object aggregateArguments(ArgumentsAccessor argumentsAccessor, ParameterContext parameterContext) throws ArgumentsAggregationException {
         BaseNumericTestConfigFor baseNumericTestConfigFor = (BaseNumericTestConfigFor) super.aggregateArguments(argumentsAccessor, parameterContext);
         baseNumericTestConfigFor.setFormat(argumentsAccessor.getString(8));

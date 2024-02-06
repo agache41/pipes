@@ -46,7 +46,10 @@ public class LocalDateFormatTest extends BaseFormatTest {
             return LocalDatePipes.LocalDateToString.class;
         }
 
-        @Override
+        /**
+* {@inheritDoc}
+*/
+@Override
         public LocalDateFormatAnnotation get() {
             return new LocalDateFormatAnnotation();
         }

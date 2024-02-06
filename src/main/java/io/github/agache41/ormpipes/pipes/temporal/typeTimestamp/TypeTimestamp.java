@@ -11,14 +11,29 @@ import org.apache.poi.ss.usermodel.Cell;
 import java.lang.annotation.*;
 import java.sql.Timestamp;
 
-import static io.github.agache41.ormpipes.config.Annotations.DEFAULT;
+import static io.github.agache41.ormpipes.config.Constants.DEFAULT;
 
+/**
+ * <pre>
+ * The interface Type timestamp.
+ * </pre>
+ */
 @Repeatable(TypeTimestamps.class)
 @Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TypeTimestamp {
+    /**
+     * <pre>
+     * The constant strongType.
+     * </pre>
+     */
     StrongType strongType = StrongType.of(Timestamp.class);
 
+    /**
+     * <pre>
+     * The interface New.
+     * </pre>
+     */
     @Repeatable(TypeTimestamps.News.class)
     @Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.ANNOTATION_TYPE})
     @Retention(RetentionPolicy.RUNTIME)
@@ -29,6 +44,8 @@ public @interface TypeTimestamp {
          * See https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html
          * <p>
          * If left blank the language tag will be considered
+         *
+         * @return the string
          */
         String format() default ""; //
 
@@ -38,6 +55,8 @@ public @interface TypeTimestamp {
          * See https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html#forLanguageTag-java.lang.String-
          * <p>
          * If left blank the default parse() or respectively toString method of the current type will be used.
+         *
+         * @return the string
          */
         String languageTag() default "";
 
@@ -46,7 +65,7 @@ public @interface TypeTimestamp {
          * See https://docs.oracle.com/javase/8/docs/api/java/time/ZoneId.html#of-java.lang.String-
          * If left blank it will resolve to System default.
          *
-         * @return
+         * @return string
          */
         String zoneId() default "";
 
@@ -56,14 +75,14 @@ public @interface TypeTimestamp {
          * <p>
          * Usage is not general recommended but in special cases can improve performance.
          *
-         * @return
+         * @return boolean
          */
         boolean simple() default false;
 
         /**
          * If set to true it will return upon parsing/formatting null for null input values.
          *
-         * @return
+         * @return boolean
          */
         boolean nullSafe() default true;
 
@@ -74,7 +93,7 @@ public @interface TypeTimestamp {
          * <p>
          * This setting overrides the nullSafe settings, if enabled.
          *
-         * @return
+         * @return boolean
          */
         boolean blankSafe() default true;
 
@@ -86,47 +105,148 @@ public @interface TypeTimestamp {
          * <p>
          * The setting has no effect on Formatting
          *
-         * @return
+         * @return boolean
          */
         boolean noException() default true;
 
+        /**
+         * <pre>
+         * Enabled on string [ ].
+         * </pre>
+         *
+         * @return the string [ ]
+         */
         String[] enabledOn() default {"read", "write"};
 
+        /**
+         * <pre>
+         * Read class.
+         * </pre>
+         *
+         * @return the class
+         */
         Class<? extends AnnotablePipe<New, String, Timestamp>> read() default TimestampPipes.ParseTimestamp.class;
 
+        /**
+         * <pre>
+         * Write class.
+         * </pre>
+         *
+         * @return the class
+         */
         Class<? extends AnnotablePipe<New, Timestamp, String>> write() default TimestampPipes.TimestampToString.class;
 
+        /**
+         * <pre>
+         * View string.
+         * </pre>
+         *
+         * @return the string
+         */
         String view() default DEFAULT;
     }
 
+    /**
+     * <pre>
+     * The interface Now.
+     * </pre>
+     */
     @Repeatable(TypeTimestamps.nows.class)
     @Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.ANNOTATION_TYPE})
     @Retention(RetentionPolicy.RUNTIME)
     @Extends(DualPipe.class)
     @interface now {
+        /**
+         * <pre>
+         * Enabled on string [ ].
+         * </pre>
+         *
+         * @return the string [ ]
+         */
         String[] enabledOn() default {"read", "write"};
 
+        /**
+         * <pre>
+         * Read class.
+         * </pre>
+         *
+         * @return the class
+         */
         Class<? extends AnnotablePipe<TypeTimestamp.now, Object, Timestamp>> read() default TimestampPipes.Now.class;
 
+        /**
+         * <pre>
+         * Write class.
+         * </pre>
+         *
+         * @return the class
+         */
         Class<? extends AnnotablePipe<TypeTimestamp.now, Object, Timestamp>> write() default TimestampPipes.Now.class;
 
+        /**
+         * <pre>
+         * View string.
+         * </pre>
+         *
+         * @return the string
+         */
         String view() default DEFAULT;
     }
 
+    /**
+     * <pre>
+     * The interface Cell value.
+     * </pre>
+     */
     @Repeatable(TypeTimestamps.CellValues.class)
     @Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.ANNOTATION_TYPE})
     @Retention(RetentionPolicy.RUNTIME)
     @Extends(DualPipe.class)
     @interface cellValue {
 
+        /**
+         * <pre>
+         * Null safe boolean.
+         * </pre>
+         *
+         * @return the boolean
+         */
         boolean nullSafe() default true;
 
+        /**
+         * <pre>
+         * Enabled on string [ ].
+         * </pre>
+         *
+         * @return the string [ ]
+         */
         String[] enabledOn() default {"read", "write"};
 
+        /**
+         * <pre>
+         * Read class.
+         * </pre>
+         *
+         * @return the class
+         */
         Class<? extends AnnotablePipe<TypeTimestamp.cellValue, Cell, Timestamp>> read() default TimestampPipes.ReadCellValue.class;
 
+        /**
+         * <pre>
+         * Write class.
+         * </pre>
+         *
+         * @return the class
+         */
         Class<? extends AnnotablePipe<TypeTimestamp.cellValue, Timestamp, ThrowingConsumer<Cell>>> write() default TimestampPipes.WriteCellValue.class;
 
+        /**
+         * <pre>
+         * View string.
+         * </pre>
+         *
+         * @return the string
+         */
         String view() default DEFAULT;
 
     }

@@ -13,12 +13,21 @@ public class Key {
         this.hashCode = Objects.hash(this.keys);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || this.getClass() != o.getClass()) {
+            return false;
+        }
         Key key = (Key) o;
-        if (this.keys.length != key.keys.length) return false;
+        if (this.keys.length != key.keys.length) {
+            return false;
+        }
         for (int index = 0; index < this.keys.length; index++) {
             if (!Objects.equals(this.keys[index], key.keys[index])) {
                 return false;
@@ -27,16 +36,22 @@ public class Key {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
         return this.hashCode;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return "Key{" +
-                "keys=" + Arrays.toString(this.keys) +
-                ", hashCode=" + this.hashCode +
-                '}';
+               "keys=" + Arrays.toString(this.keys) +
+               ", hashCode=" + this.hashCode +
+               '}';
     }
 }

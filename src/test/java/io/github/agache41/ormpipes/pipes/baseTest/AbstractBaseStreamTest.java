@@ -67,7 +67,10 @@ public abstract class AbstractBaseStreamTest<T extends TestBean> extends Abstrac
         return readValues;
     }
 
-    @Override
+    /**
+* {@inheritDoc}
+*/
+@Override
     public T get() {
         try {
             return this.constructor.newInstance();
@@ -76,12 +79,18 @@ public abstract class AbstractBaseStreamTest<T extends TestBean> extends Abstrac
         }
     }
 
-    @Override
+    /**
+* {@inheritDoc}
+*/
+@Override
     public List<T> getValues() {
         return this.values;
     }
 
-    @Override
+    /**
+* {@inheritDoc}
+*/
+@Override
     public List<T> getLessValues() {
         return this.lessValues;
     }

@@ -10,20 +10,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+/**
+ * <pre>
+ * The type Csv file writer.
+ * </pre>
+ */
 public class CSVFileWriter extends CSVFileBase implements AnnotablePipe<CSVFile, Stream<?>, Stream<String[]>> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public StrongType getInputType() {
         return StrongType.of(Stream.class)
                          .parameterizedWith("?");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public StrongType getOutputType() {
         return StrongType.of(Stream.class)
                          .parameterizedWith(String[].class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ThrowingFunction<Stream<?>, Stream<String[]>> function() {
         return input -> {
@@ -34,14 +48,17 @@ public class CSVFileWriter extends CSVFileBase implements AnnotablePipe<CSVFile,
                     List<String[]> headerList = new ArrayList<>();
                     headerList.add(handler.header);
                     return Stream.concat(headerList.stream(),
-                            input.map(ThrowingFunction.wrap(line -> this.doLine(handler, line))));
-                } else throw new RuntimeException(" Header is not available for writing the first line !" + handler);
+                                         input.map(ThrowingFunction.wrap(line -> this.doLine(handler, line))));
+                } else {
+                    throw new RuntimeException(" Header is not available for writing the first line !" + handler);
+                }
             }
             return input.map(ThrowingFunction.wrap(line -> this.doLine(handler, line)));
         };
     }
 
-    private String[] doLine(CSVFileHandler handler, Object input) throws Throwable {
+    private String[] doLine(CSVFileHandler handler,
+                            Object input) throws Throwable {
         String[] result = new String[handler.positionIndex.length];
         for (int index = 0; index < handler.positionIndex.length; index++) {
             result[handler.positionIndex[index]] = handler.writePipes[index].apply(input);

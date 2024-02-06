@@ -5,8 +5,20 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * <pre>
+ * The interface Accessors.
+ * </pre>
+ */
 @Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Accessors {
+    /**
+     * <pre>
+     * Value accessor [ ].
+     * </pre>
+     *
+     * @return the accessor [ ]
+     */
     Accessor[] value();
 }

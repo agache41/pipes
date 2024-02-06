@@ -10,70 +10,129 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+/**
+ * <pre>
+ * The type Zip archive pipes.
+ * </pre>
+ */
 public class ZipArchivePipes {
+    /**
+     * <pre>
+     * The type Archive input stream pipe.
+     * </pre>
+     */
     public static class ArchiveInputStreamPipe implements AnnotablePipe<Zip.Archive, InputStream, ZipInputStream> {
 
         private ThrowingFunction<InputStream, ZipInputStream> function;
 
+        /**
+         * {@inheritDoc}
+         */
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getInputType() {
             return StrongType.of(InputStream.class);
         }
 
+        /**
+         * {@inheritDoc}
+         */
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getOutputType() {
             return StrongType.of(ZipInputStream.class);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void configure(Zip.Archive cfg) {
             this.function = ZipInputStream::new;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public ThrowingFunction<InputStream, ZipInputStream> function() {
             return this.function;
         }
     }
 
+    /**
+     * <pre>
+     * The type Archive output stream pipe.
+     * </pre>
+     */
     public static class ArchiveOutputStreamPipe implements AnnotablePipe<Zip.Archive, OutputStream, ZipOutputStream> {
         private ThrowingFunction<OutputStream, ZipOutputStream> function;
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getInputType() {
             return StrongType.of(OutputStream.class);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getOutputType() {
             return StrongType.of(ZipOutputStream.class);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void configure(Zip.Archive cfg) {
             this.function = ZipOutputStream::new;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public ThrowingFunction<OutputStream, ZipOutputStream> function() {
             return this.function;
         }
     }
 
+    /**
+     * <pre>
+     * The type Zip entry input stream pipe.
+     * </pre>
+     */
     public static class ZipEntryInputStreamPipe implements AnnotablePipe<Zip.Entry, ZipInputStream, InputStream> {
 
         private ThrowingFunction<ZipInputStream, InputStream> function;
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getInputType() {
             return StrongType.of(ZipInputStream.class);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getOutputType() {
             return StrongType.of(InputStream.class);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void configure(Zip.Entry cfg) {
             this.function = zipInputStream -> {
@@ -88,25 +147,42 @@ public class ZipArchivePipes {
             };
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public ThrowingFunction<ZipInputStream, InputStream> function() {
             return this.function;
         }
     }
 
+    /**
+     * <pre>
+     * The type Zip entry output stream pipe.
+     * </pre>
+     */
     public static class ZipEntryOutputStreamPipe implements AnnotablePipe<Zip.Entry, ZipOutputStream, OutputStream> {
         private ThrowingFunction<ZipOutputStream, OutputStream> function;
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getInputType() {
             return StrongType.of(ZipOutputStream.class);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getOutputType() {
             return StrongType.of(OutputStream.class);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void configure(Zip.Entry cfg) {
             this.function = zipOutputStream -> {
@@ -116,6 +192,9 @@ public class ZipArchivePipes {
             };
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public ThrowingFunction<ZipOutputStream, OutputStream> function() {
             return this.function;

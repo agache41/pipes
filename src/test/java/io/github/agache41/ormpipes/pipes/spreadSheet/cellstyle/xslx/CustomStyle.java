@@ -5,7 +5,10 @@ import org.apache.poi.ss.usermodel.*;
 import java.util.function.BiFunction;
 
 public class CustomStyle implements BiFunction<CellStyle, Workbook, CellStyle> {
-    @Override
+    /**
+* {@inheritDoc}
+*/
+@Override
     public CellStyle apply(CellStyle cellStyle, Workbook workbook) {
         cellStyle.setFillForegroundColor(IndexedColors.LAVENDER.index);
         cellStyle.setFillPattern(FillPatternType.BRICKS);

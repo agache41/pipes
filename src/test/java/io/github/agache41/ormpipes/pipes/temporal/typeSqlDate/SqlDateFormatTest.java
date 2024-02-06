@@ -46,7 +46,10 @@ public class SqlDateFormatTest extends BaseFormatTest {
             return SqlDatePipes.SqlDateToString.class;
         }
 
-        @Override
+        /**
+* {@inheritDoc}
+*/
+@Override
         public SqlDateFormatAnnotation get() {
             return new SqlDateFormatAnnotation();
         }

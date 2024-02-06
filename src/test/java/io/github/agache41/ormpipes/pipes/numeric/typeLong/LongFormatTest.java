@@ -44,7 +44,10 @@ public class LongFormatTest extends BaseFormatTest {
             return LongPipes.LongToString.class;
         }
 
-        @Override
+        /**
+* {@inheritDoc}
+*/
+@Override
         public LongFormatAnnotation get() {
             return new LongFormatAnnotation();
         }

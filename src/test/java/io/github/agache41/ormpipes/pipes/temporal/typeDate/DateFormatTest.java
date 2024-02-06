@@ -46,7 +46,10 @@ public class DateFormatTest extends BaseFormatTest {
             return DatePipes.DateToString.class;
         }
 
-        @Override
+        /**
+* {@inheritDoc}
+*/
+@Override
         public DateFormatAnnotation get() {
             return new DateFormatAnnotation();
         }

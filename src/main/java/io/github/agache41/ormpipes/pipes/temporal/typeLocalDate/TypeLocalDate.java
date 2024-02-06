@@ -11,14 +11,29 @@ import org.apache.poi.ss.usermodel.Cell;
 import java.lang.annotation.*;
 import java.time.LocalDate;
 
-import static io.github.agache41.ormpipes.config.Annotations.DEFAULT;
+import static io.github.agache41.ormpipes.config.Constants.DEFAULT;
 
+/**
+ * <pre>
+ * The interface Type local date.
+ * </pre>
+ */
 @Repeatable(TypeLocalDates.class)
 @Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TypeLocalDate {
+    /**
+     * <pre>
+     * The constant strongType.
+     * </pre>
+     */
     StrongType strongType = StrongType.of(LocalDate.class);
 
+    /**
+     * <pre>
+     * The interface New.
+     * </pre>
+     */
     @Repeatable(TypeLocalDates.News.class)
     @Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.ANNOTATION_TYPE})
     @Retention(RetentionPolicy.RUNTIME)
@@ -30,6 +45,8 @@ public @interface TypeLocalDate {
          * See https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html
          * <p>
          * If left blank the language tag will be considered
+         *
+         * @return the string
          */
         String format() default ""; //
 
@@ -39,6 +56,8 @@ public @interface TypeLocalDate {
          * See https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html#forLanguageTag-java.lang.String-
          * <p>
          * If left blank the default toString or respectively parse() method of the current type will be used.
+         *
+         * @return the string
          */
         String languageTag() default "";
 
@@ -48,7 +67,7 @@ public @interface TypeLocalDate {
          * See https://docs.oracle.com/javase/8/docs/api/java/time/ZoneId.html#of-java.lang.String-
          * If left blank it will resolve to System default.
          *
-         * @return
+         * @return string
          */
         String zoneId() default "";
 
@@ -58,14 +77,14 @@ public @interface TypeLocalDate {
          * <p>
          * Usage is not general recommended but in special cases can improve performance.
          *
-         * @return
+         * @return boolean
          */
         boolean simple() default false;
 
         /**
          * If set to true it will return upon parsing/formatting null for null input values.
          *
-         * @return
+         * @return boolean
          */
         boolean nullSafe() default true;
 
@@ -76,7 +95,7 @@ public @interface TypeLocalDate {
          * <p>
          * This setting overrides the nullSafe settings, if enabled.
          *
-         * @return
+         * @return boolean
          */
         boolean blankSafe() default true;
 
@@ -88,47 +107,148 @@ public @interface TypeLocalDate {
          * <p>
          * The setting has no effect on Formatting
          *
-         * @return
+         * @return boolean
          */
         boolean noException() default true;
 
+        /**
+         * <pre>
+         * Enabled on string [ ].
+         * </pre>
+         *
+         * @return the string [ ]
+         */
         String[] enabledOn() default {"read", "write"};
 
+        /**
+         * <pre>
+         * Read class.
+         * </pre>
+         *
+         * @return the class
+         */
         Class<? extends AnnotablePipe<New, String, LocalDate>> read() default LocalDatePipes.ParseLocalDate.class;
 
+        /**
+         * <pre>
+         * Write class.
+         * </pre>
+         *
+         * @return the class
+         */
         Class<? extends AnnotablePipe<New, LocalDate, String>> write() default LocalDatePipes.LocalDateToString.class;
 
+        /**
+         * <pre>
+         * View string.
+         * </pre>
+         *
+         * @return the string
+         */
         String view() default DEFAULT;
     }
 
+    /**
+     * <pre>
+     * The interface Now.
+     * </pre>
+     */
     @Repeatable(TypeLocalDates.nows.class)
     @Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.ANNOTATION_TYPE})
     @Retention(RetentionPolicy.RUNTIME)
     @Extends(DualPipe.class)
     @interface now {
+        /**
+         * <pre>
+         * Enabled on string [ ].
+         * </pre>
+         *
+         * @return the string [ ]
+         */
         String[] enabledOn() default {"read", "write"};
 
+        /**
+         * <pre>
+         * Read class.
+         * </pre>
+         *
+         * @return the class
+         */
         Class<? extends AnnotablePipe<TypeLocalDate.now, Object, LocalDate>> read() default LocalDatePipes.Now.class;
 
+        /**
+         * <pre>
+         * Write class.
+         * </pre>
+         *
+         * @return the class
+         */
         Class<? extends AnnotablePipe<TypeLocalDate.now, Object, LocalDate>> write() default LocalDatePipes.Now.class;
 
+        /**
+         * <pre>
+         * View string.
+         * </pre>
+         *
+         * @return the string
+         */
         String view() default DEFAULT;
     }
 
+    /**
+     * <pre>
+     * The interface Cell value.
+     * </pre>
+     */
     @Repeatable(TypeLocalDates.CellValues.class)
     @Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.ANNOTATION_TYPE})
     @Retention(RetentionPolicy.RUNTIME)
     @Extends(DualPipe.class)
     @interface cellValue {
 
+        /**
+         * <pre>
+         * Null safe boolean.
+         * </pre>
+         *
+         * @return the boolean
+         */
         boolean nullSafe() default true;
 
+        /**
+         * <pre>
+         * Enabled on string [ ].
+         * </pre>
+         *
+         * @return the string [ ]
+         */
         String[] enabledOn() default {"read", "write"};
 
+        /**
+         * <pre>
+         * Read class.
+         * </pre>
+         *
+         * @return the class
+         */
         Class<? extends AnnotablePipe<TypeLocalDate.cellValue, Cell, LocalDate>> read() default LocalDatePipes.ReadCellValue.class;
 
+        /**
+         * <pre>
+         * Write class.
+         * </pre>
+         *
+         * @return the class
+         */
         Class<? extends AnnotablePipe<TypeLocalDate.cellValue, LocalDate, ThrowingConsumer<Cell>>> write() default LocalDatePipes.WriteCellValue.class;
 
+        /**
+         * <pre>
+         * View string.
+         * </pre>
+         *
+         * @return the string
+         */
         String view() default DEFAULT;
 
     }

@@ -45,7 +45,10 @@ public class FloatFormatTest extends BaseFormatTest {
             return FloatPipes.FloatToString.class;
         }
 
-        @Override
+        /**
+* {@inheritDoc}
+*/
+@Override
         public FloatFormatTest.FloatFormatAnnotation get() {
             return new FloatFormatTest.FloatFormatAnnotation();
         }

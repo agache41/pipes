@@ -29,7 +29,10 @@ public class ShortFormatTest extends BaseFormatTest {
         this.doTest(baseConfigAnnotation);
     }
 
-    @Override
+    /**
+* {@inheritDoc}
+*/
+@Override
     public boolean existsSmall() {
         return super.existsSmall();
     }
@@ -51,7 +54,10 @@ public class ShortFormatTest extends BaseFormatTest {
             return ShortPipes.ShortToString.class;
         }
 
-        @Override
+        /**
+* {@inheritDoc}
+*/
+@Override
         public ShortFormatAnnotation get() {
             return new ShortFormatAnnotation();
         }

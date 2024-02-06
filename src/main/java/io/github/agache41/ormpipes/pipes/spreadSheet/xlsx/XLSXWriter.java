@@ -8,11 +8,22 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.OutputStream;
 
+/**
+ * <pre>
+ * The type Xlsx writer.
+ * </pre>
+ */
 public class XLSXWriter implements AnnotablePipe<SpreadSheet.xlsx, ThrowingConsumer<XSSFWorkbook>, ThrowingConsumer<OutputStream>> {
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void configure(SpreadSheet.xlsx cfg) {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ThrowingFunction<ThrowingConsumer<XSSFWorkbook>, ThrowingConsumer<OutputStream>> function() {
         return workbookThrowingConsumer -> outputStream -> {

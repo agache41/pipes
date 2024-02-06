@@ -17,6 +17,15 @@ import java.util.function.Supplier;
 @FunctionalInterface
 public interface ThrowingSupplier<T> {
 
+    /**
+     * <pre>
+     * Wrap supplier.
+     * </pre>
+     *
+     * @param <T>              the type parameter
+     * @param throwingSupplier the throwing supplier
+     * @return the supplier
+     */
     static <T> Supplier<T> wrap(ThrowingSupplier<T> throwingSupplier) {
         return () -> {
             try {
@@ -31,6 +40,7 @@ public interface ThrowingSupplier<T> {
      * Gets a result.
      *
      * @return a result
+     * @throws Throwable the throwable
      */
     T get() throws Throwable;
 }

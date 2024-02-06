@@ -45,7 +45,10 @@ public class IntegerFormatTest extends BaseFormatTest {
             return IntegerPipes.IntegerToString.class;
         }
 
-        @Override
+        /**
+* {@inheritDoc}
+*/
+@Override
         public IntegerFormatTest.IntegerFormatAnnotation get() {
             return new IntegerFormatTest.IntegerFormatAnnotation();
         }

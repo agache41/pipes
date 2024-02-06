@@ -2,17 +2,13 @@ package io.github.agache41.ormpipes.pipe.registry;
 
 import io.github.agache41.annotator.annotations.Extends;
 import io.github.agache41.annotator.annotator.Annotate;
-import io.github.agache41.ormpipes.pipe.AnnotablePipe;
-import io.github.agache41.ormpipes.pipe.DualPipe;
 import io.github.agache41.annotator.annotator.Annotator;
-
 import io.github.agache41.annotator.matcher.AnExtendsValue;
 import io.github.agache41.annotator.matcher.HaveAnnotation;
 import io.github.agache41.annotator.predicate.AreInDefaultOrInView;
-
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import io.github.agache41.ormpipes.pipe.AnnotablePipe;
+import io.github.agache41.ormpipes.pipe.DualPipe;
+import org.jboss.logging.Logger;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -22,11 +18,14 @@ import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 public class PipeRegistry {
-    private static final Logger logger = LogManager.getLogger(PipeRegistry.class);
+    private static final Logger logger = Logger.getLogger(PipeRegistry.class);
 
     private static final Map<Key, AnnotablePipe<?, ?, ?>> cache = new HashMap<>();
 
-    public static <I, O> AnnotablePipe<?, I, O> getCachedPipeFrom(Object varInput, String view, String method, boolean reversed) {
+    public static <I, O> AnnotablePipe<?, I, O> getCachedPipeFrom(Object varInput,
+                                                                  String view,
+                                                                  String method,
+                                                                  boolean reversed) {
         Key key = new Key(varInput, view, method, reversed);
         // check cache
         AnnotablePipe<?, I, O> pipe = (AnnotablePipe<?, I, O>) cache.get(key);
@@ -37,7 +36,10 @@ public class PipeRegistry {
         return pipe;
     }
 
-    public static <I, O> AnnotablePipe<?, I, O> buildPipeFrom(Object varInput, String view, String method, boolean reversed) {
+    public static <I, O> AnnotablePipe<?, I, O> buildPipeFrom(Object varInput,
+                                                              String view,
+                                                              String method,
+                                                              boolean reversed) {
         Annotate<Object> annotator = Annotator.of(varInput);
         AnnotablePipe<?, I, O> pipe = (AnnotablePipe<?, I, O>) reverse(annotator.getAnnotationsThat(HaveAnnotation.ofType(Extends.class)
                                                                                                                   .having(AnExtendsValue.of(DualPipe.class)))
@@ -45,14 +47,17 @@ public class PipeRegistry {
                                                                                                                                  .filter(Objects::nonNull)
                                                                                                                                  .reduce(AnnotablePipe::compose)
                                                                                                                                  .orElseThrow(() -> new RuntimeException("No Annotations Found"));
-        logger.info("Pipe {}:{}:{}:{}", annotator, view, method, pipe.getDescription());
-        logger.debug("Pipe {}:{}:{}:{}", annotator, view, method, pipe.getDetailedDescription());
+        logger.debugf("Pipe %s:%s:%s:%s", annotator, view, method, pipe.getDescription());
+        logger.tracef("Pipe %s:%s:%s:%s", annotator, view, method, pipe.getDetailedDescription());
         return pipe;
     }
 
     //todo: move to utils
-    public static <T> Stream<T> reverse(Stream<T> stream, boolean reverse) {
-        if (!reverse) return stream;
+    public static <T> Stream<T> reverse(Stream<T> stream,
+                                        boolean reverse) {
+        if (!reverse) {
+            return stream;
+        }
         return stream.collect(Collector.of(() -> new LinkedList(), LinkedList::addFirst, (a, b) -> a))
                      .stream();
     }

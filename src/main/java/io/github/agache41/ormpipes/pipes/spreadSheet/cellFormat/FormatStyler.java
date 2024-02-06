@@ -6,16 +6,27 @@ import io.github.agache41.ormpipes.pipes.spreadSheet.SpreadSheet;
 import io.github.agache41.ormpipes.pipes.spreadSheet.base.Styler;
 import org.apache.poi.ss.usermodel.Cell;
 
+/**
+ * <pre>
+ * The type Format styler.
+ * </pre>
+ */
 public class FormatStyler extends Styler<SpreadSheet.ContentFormat> implements AnnotablePipe<SpreadSheet.ContentFormat, ThrowingConsumer<Cell>, ThrowingConsumer<Cell>> {
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void configure(SpreadSheet.ContentFormat cfg) {
         super.configure(cfg);
         this.configureStyle = (style, workbook) -> {
-            if (cfg.dataFormat() != -1) style.setDataFormat(cfg.dataFormat());
-            else if (!cfg.value()
-                         .isEmpty()) style.setDataFormat(workbook.getCreationHelper()
-                                                                 .createDataFormat()
-                                                                 .getFormat(cfg.value()));
+            if (cfg.dataFormat() != -1) {
+                style.setDataFormat(cfg.dataFormat());
+            } else if (!cfg.value()
+                           .isEmpty()) {
+                style.setDataFormat(workbook.getCreationHelper()
+                                            .createDataFormat()
+                                            .getFormat(cfg.value()));
+            }
             return style;
         };
     }

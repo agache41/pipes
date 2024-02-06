@@ -10,7 +10,12 @@ import java.lang.reflect.Method;
 public interface Annotable<A extends Annotation> {
     void configure(A cfg);
 
-    default void configure(A cfg, Class<?> onClass, Field onField, Method onMethod, Accessor<?> accessor, String operation) {
+    default void configure(A cfg,
+                           Class<?> onClass,
+                           Field onField,
+                           Method onMethod,
+                           Accessor<?> accessor,
+                           String operation) {
         this.configure(cfg);
     }
 

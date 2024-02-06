@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
-import static io.github.agache41.ormpipes.config.Annotations.DEFAULT;
+import static io.github.agache41.ormpipes.config.Constants.DEFAULT;
 
 
 //todo: javadoc
@@ -19,11 +19,14 @@ public class Registry {
     private static final Map<Key, Object> getRegistryCache = new ConcurrentHashMap<>();
     private static final Map<Key, Object> getMethodRegistryCache = new ConcurrentHashMap<>();
 
-    public static synchronized <T extends Annotable> T get(Class<T> clazz, Object varInput) throws Throwable {
+    public static synchronized <T extends Annotable> T get(Class<T> clazz,
+                                                           Object varInput) throws Throwable {
         return get(clazz, varInput, DEFAULT);
     }
 
-    public static synchronized <T extends Annotable, A extends Annotation> T get(Class<T> clazz, Object varInput, String view) {
+    public static synchronized <T extends Annotable, A extends Annotation> T get(Class<T> clazz,
+                                                                                 Object varInput,
+                                                                                 String view) {
         Key key = new Key("get", clazz, varInput, view);
         // check cache
         T result = (T) getRegistryCache.get(key);
@@ -39,7 +42,10 @@ public class Registry {
     }
 
 
-    public static <T extends Annotable, A extends Annotation> T createAndConfigureFromMethod(Class<T> baseClass, A cfg, String operation, Object varInput) {
+    public static <T extends Annotable, A extends Annotation> T createAndConfigureFromMethod(Class<T> baseClass,
+                                                                                             A cfg,
+                                                                                             String operation,
+                                                                                             Object varInput) {
         Key key = new Key("getActualClass", baseClass, cfg.annotationType(), operation);
         // check cache
         Class<T> actualClass = (Class<T>) getMethodRegistryCache.get(key);
@@ -50,12 +56,16 @@ public class Registry {
             getMethodRegistryCache.put(key, actualClass);
         }
         // check if operation is enabled
-        if (!checkEnabled(cfg, operation)) return null;
+        if (!checkEnabled(cfg, operation)) {
+            return null;
+        }
         // build instance
         return createAndConfigureInstance(actualClass, cfg, varInput, operation);
     }
 
-    private static <T extends Annotable, A extends Annotation> Class<T> getActualClass(Class<T> baseClass, A cfg, String operation) {
+    private static <T extends Annotable, A extends Annotation> Class<T> getActualClass(Class<T> baseClass,
+                                                                                       A cfg,
+                                                                                       String operation) {
 
         Class<T> actualClass = Annotator.of(cfg)
                                         .getAccessor(operation)
@@ -67,7 +77,10 @@ public class Registry {
         return actualClass;
     }
 
-    private static <T extends Annotable, A extends Annotation> T createAndConfigureInstance(Class<T> ofClass, A cfg, Object varInput, String operation) {
+    private static <T extends Annotable, A extends Annotation> T createAndConfigureInstance(Class<T> ofClass,
+                                                                                            A cfg,
+                                                                                            Object varInput,
+                                                                                            String operation) {
         T result = newInstance(ofClass);
         if (varInput == null) {
             result.configure(cfg, null, null, null, null, operation);
@@ -88,7 +101,8 @@ public class Registry {
         return result;
     }
 
-    private static <A extends Annotation> boolean checkEnabled(A cfg, String annotMethod) {
+    private static <A extends Annotation> boolean checkEnabled(A cfg,
+                                                               String annotMethod) {
         return Stream.of(Annotator.of(cfg)
                                   .getAccessor("enabledOn")
                                   .getAs(cfg, String[].class))

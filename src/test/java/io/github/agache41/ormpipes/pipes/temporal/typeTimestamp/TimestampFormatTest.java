@@ -46,7 +46,10 @@ public class TimestampFormatTest extends BaseFormatTest {
             return TimestampPipes.TimestampToString.class;
         }
 
-        @Override
+        /**
+* {@inheritDoc}
+*/
+@Override
         public TimestampFormatAnnotation get() {
             return new TimestampFormatAnnotation();
         }

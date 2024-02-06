@@ -48,14 +48,20 @@ class ExcelManySheetTest extends AbstractBaseObjectTest<ExcelTestMultiBean> {
     }
 
     public static class ExcelSheetTestBean1Feeder extends AbstractValuesFeeder<ExcelSheetTestBean1> {
-        @Override
+        /**
+* {@inheritDoc}
+*/
+@Override
         public ExcelSheetTestBean1 get() {
             return new ExcelSheetTestBean1();
         }
     }
 
     public static class ExcelSheetTestBean2Feeder extends AbstractValuesFeeder<ExcelSheetTestBean2> {
-        @Override
+        /**
+* {@inheritDoc}
+*/
+@Override
         public ExcelSheetTestBean2 get() {
             return new ExcelSheetTestBean2();
         }

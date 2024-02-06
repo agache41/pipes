@@ -15,18 +15,36 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * <pre>
+ * The type Boolean pipes.
+ * </pre>
+ */
 public class BooleanPipes {
+    /**
+     * <pre>
+     * The type Boolean to string.
+     * </pre>
+     */
     public static class BooleanToString extends AbstractFormat<TypeBoolean.New, Boolean> implements AnnotablePipe<TypeBoolean.New, Boolean, String> {
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getInputType() {
             return TypeBoolean.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void configure(TypeBoolean.New cfg) {
             super.configure(cfg);
-            if (this.simple) return;
+            if (this.simple) {
+                return;
+            }
             final String trueValue = cfg.value().length == 0 ? null : cfg.value()[0];
             final String falseValue = cfg.falseValue().length == 0 ? null : cfg.falseValue()[0];
             final String unknownValue = cfg.nullOrUnknownIsFalse() ? falseValue : null;
@@ -34,13 +52,24 @@ public class BooleanPipes {
         }
     }
 
+    /**
+     * <pre>
+     * The type Parse boolean.
+     * </pre>
+     */
     public static class ParseBoolean extends AbstractParse<TypeBoolean.New, Boolean> implements AnnotablePipe<TypeBoolean.New, String, Boolean> {
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getOutputType() {
             return TypeBoolean.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void configure(TypeBoolean.New cfg) {
             super.configure(cfg);
@@ -63,43 +92,74 @@ public class BooleanPipes {
         }
     }
 
+    /**
+     * <pre>
+     * The type Value of.
+     * </pre>
+     */
     public static class ValueOf implements AnnotablePipe<TypeBoolean.value, Object, Boolean> {
 
         private Boolean value;
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getInputType() {
             return TypeObject.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getOutputType() {
             return TypeBoolean.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void configure(TypeBoolean.value cfg) {
             this.value = cfg.value();
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public ThrowingFunction<Object, Boolean> function() {
             return object -> this.value;
         }
     }
 
+    /**
+     * <pre>
+     * The type Negate.
+     * </pre>
+     */
     public static class Negate extends AbstractNullSafe<Boolean, Boolean> implements AnnotablePipe<Annotation, Boolean, Boolean> {
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getInputType() {
             return TypeBoolean.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getOutputType() {
             return TypeBoolean.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void configure(Annotation cfg) {
             this.function = booleanValue -> !booleanValue;
@@ -107,28 +167,47 @@ public class BooleanPipes {
         }
     }
 
+    /**
+     * <pre>
+     * The type Read cell value.
+     * </pre>
+     */
     public static class ReadCellValue implements AnnotablePipe<TypeBoolean.cellValue, Cell, Boolean> {
         private ThrowingFunction<Cell, Boolean> function;
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getInputType() {
             return StrongType.of(Cell.class);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getOutputType() {
             return TypeBoolean.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void configure(TypeBoolean.cellValue cfg) {
             this.function = cell -> {
-                if (cfg.nullSafe() && cell.getCellType() == CellType.BLANK) return null;
+                if (cfg.nullSafe() && cell.getCellType() == CellType.BLANK) {
+                    return null;
+                }
                 return cell.getBooleanCellValue();
             };
             this.function = this.function.nullSafe(cfg.nullSafe());
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public ThrowingFunction<Cell, Boolean> function() {
             return this.function;
@@ -136,22 +215,37 @@ public class BooleanPipes {
     }
 
 
+    /**
+     * <pre>
+     * The type Write cell value.
+     * </pre>
+     */
     public static class WriteCellValue implements AnnotablePipe<TypeBoolean.cellValue, Boolean, ThrowingConsumer<Cell>> {
         private ThrowingFunction<Boolean, ThrowingConsumer<Cell>> function;
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getInputType() {
             return TypeBoolean.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void configure(TypeBoolean.cellValue cfg) {
-            if (cfg.nullSafe())
+            if (cfg.nullSafe()) {
                 this.function = booleaner -> booleaner == null ? cell -> cell.setBlank() : cell -> cell.setCellValue(booleaner);
-            else
+            } else {
                 this.function = booleaner -> cell -> cell.setCellValue(booleaner);
+            }
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public ThrowingFunction<Boolean, ThrowingConsumer<Cell>> function() {
             return this.function;

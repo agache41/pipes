@@ -6,32 +6,44 @@ import io.github.agache41.ormpipes.pipes.spreadSheet.SpreadSheet;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+/**
+ * <pre>
+ * The type Write sheet selector.
+ * </pre>
+ */
 public class WriteSheetSelector implements AnnotablePipe<SpreadSheet.select, Workbook, Sheet> {
 
     private String sheetName;
 
     private int sheetIndex;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void configure(SpreadSheet.select cfg) {
         this.sheetName = cfg.sheetName();
         this.sheetIndex = cfg.sheetIndex();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ThrowingFunction<Workbook, Sheet> function() {
         return workbook -> {
             Sheet sheet;
-            if (this.sheetName.isEmpty())
+            if (this.sheetName.isEmpty()) {
                 try {
                     sheet = workbook.getSheetAt(this.sheetIndex);
                 } catch (IllegalArgumentException iae) {
                     sheet = workbook.createSheet();
                 }
-            else {
+            } else {
                 sheet = workbook.getSheet(this.sheetName);
-                if (sheet == null)
+                if (sheet == null) {
                     sheet = workbook.createSheet(this.sheetName);
+                }
             }
             return sheet;
         };

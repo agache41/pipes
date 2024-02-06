@@ -40,7 +40,10 @@ public class BigIntegerFormatTest extends BaseFormatTest {
             return BigIntegerPipes.BigIntegerToString.class;
         }
 
-        @Override
+        /**
+* {@inheritDoc}
+*/
+@Override
         public BigIntegerFormatAnnotation get() {
             return new BigIntegerFormatAnnotation();
         }

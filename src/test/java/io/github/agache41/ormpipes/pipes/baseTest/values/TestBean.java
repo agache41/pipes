@@ -40,7 +40,10 @@ public interface TestBean extends Comparable<TestBean> {
 
     int hashCode();
 
-    @Override
+    /**
+* {@inheritDoc}
+*/
+@Override
     default int compareTo(TestBean o) {
         return this.hashCode() - o.hashCode();
     }

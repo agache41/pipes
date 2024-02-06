@@ -13,22 +13,34 @@ import java.util.Objects;
 
 @Execution(ExecutionMode.CONCURRENT)
 public class ToStringPipeTest implements AnnotablePipe<ToStringAnnotTest, Integer, String> {
-    @Override
+    /**
+* {@inheritDoc}
+*/
+@Override
     public void configure(ToStringAnnotTest cfg) {
 
     }
 
-    @Override
+    /**
+* {@inheritDoc}
+*/
+@Override
     public ThrowingFunction<Integer, String> function() {
         return Objects::toString;
     }
 
-    @Override
+    /**
+* {@inheritDoc}
+*/
+@Override
     public StrongType getInputType() {
         return TypeInteger.strongType;
     }
 
-    @Override
+    /**
+* {@inheritDoc}
+*/
+@Override
     public StrongType getOutputType() {
         return TypeString.strongType;
     }

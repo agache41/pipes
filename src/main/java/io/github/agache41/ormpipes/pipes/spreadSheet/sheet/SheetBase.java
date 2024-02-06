@@ -1,51 +1,133 @@
 package io.github.agache41.ormpipes.pipes.spreadSheet.sheet;
 
+import io.github.agache41.annotator.accessor.Accessor;
 import io.github.agache41.ormpipes.functional.Helper;
 import io.github.agache41.ormpipes.pipe.registry.Annotable;
 import io.github.agache41.ormpipes.pipes.spreadSheet.SpreadSheet;
-import io.github.agache41.annotator.accessor.Accessor;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.jboss.logging.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
+/**
+ * <pre>
+ * The type Sheet base.
+ * </pre>
+ */
 public abstract class SheetBase implements Annotable<SpreadSheet.sheet>, Supplier<Object> {
 
-    protected static final Logger logger = LogManager.getLogger(SpreadSheet.sheet.class);
+    /**
+     * <pre>
+     * The constant logger.
+     * </pre>
+     */
+    protected static final Logger logger = Logger.getLogger(SpreadSheet.sheet.class);
 
+    /**
+     * <pre>
+     * The On class.
+     * </pre>
+     */
     protected Class<?> onClass;
+    /**
+     * <pre>
+     * The Sheet name.
+     * </pre>
+     */
     protected String sheetName;
+    /**
+     * <pre>
+     * The Cfg.
+     * </pre>
+     */
     protected SpreadSheet.sheet cfg;
+    /**
+     * <pre>
+     * The Use first line as header.
+     * </pre>
+     */
     protected boolean useFirstLineAsHeader;
+    /**
+     * <pre>
+     * The Append.
+     * </pre>
+     */
     protected boolean append;
+    /**
+     * <pre>
+     * The Skip first n lines.
+     * </pre>
+     */
     protected int skipFirstNLines;
+    /**
+     * <pre>
+     * The Offset x.
+     * </pre>
+     */
     protected int offsetX;
+    /**
+     * <pre>
+     * The Offset y.
+     * </pre>
+     */
     protected int offsetY;
+    /**
+     * <pre>
+     * The Default column width.
+     * </pre>
+     */
     protected int defaultColumnWidth;
+    /**
+     * <pre>
+     * The Default row height.
+     * </pre>
+     */
     protected short defaultRowHeight;
+    /**
+     * <pre>
+     * The Default row height in points.
+     * </pre>
+     */
     protected int defaultRowHeightInPoints;
 
+    /**
+     * <pre>
+     * The Auto resize all columns.
+     * </pre>
+     */
     protected boolean autoResizeAllColumns;
     private Supplier<?> constructor;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Object get() {
         return this.constructor.get();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void configure(SpreadSheet.sheet cfg, Class<?> onClass, Field onField, Method onMethod, Accessor<?> onAccessor, String operation) {
+    public void configure(SpreadSheet.sheet cfg,
+                          Class<?> onClass,
+                          Field onField,
+                          Method onMethod,
+                          Accessor<?> onAccessor,
+                          String operation) {
         this.onClass = onClass;
         this.constructor = Helper.constructor(onClass);
         this.configure(cfg);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void configure(SpreadSheet.sheet cfg) {
         this.cfg = cfg;
@@ -60,10 +142,25 @@ public abstract class SheetBase implements Annotable<SpreadSheet.sheet>, Supplie
         this.autoResizeAllColumns = cfg.autoResizeAllColumns();
     }
 
+    /**
+     * <pre>
+     * Handler sheet handler.
+     * </pre>
+     *
+     * @return the sheet handler
+     */
     protected SheetHandler handler() {
         return new SheetHandler(this.onClass, this.cfg);
     }
 
+    /**
+     * <pre>
+     * Get header string [ ].
+     * </pre>
+     *
+     * @param row the row
+     * @return the string [ ]
+     */
     protected String[] getHeader(Row row) {
         return IntStream.range(this.offsetX, row.getLastCellNum())
                         .mapToObj(row::getCell)

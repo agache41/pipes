@@ -1,10 +1,10 @@
 package io.github.agache41.ormpipes.pipes.spreadSheet.base;
 
+import io.github.agache41.annotator.annotator.Annotator;
 import io.github.agache41.ormpipes.functional.StrongType;
 import io.github.agache41.ormpipes.functional.ThrowingConsumer;
 import io.github.agache41.ormpipes.functional.ThrowingFunction;
 import io.github.agache41.ormpipes.pipe.AnnotablePipe;
-import io.github.agache41.annotator.annotator.Annotator;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -14,12 +14,27 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+/**
+ * <pre>
+ * The type Styler.
+ * </pre>
+ *
+ * @param <A> the type parameter
+ */
 public abstract class Styler<A extends Annotation> implements AnnotablePipe<A, ThrowingConsumer<Cell>, ThrowingConsumer<Cell>> {
     private final AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+    /**
+     * <pre>
+     * The Configure style.
+     * </pre>
+     */
     protected BiFunction<CellStyle, Workbook, CellStyle> configureStyle;
     private Function<AtomicBoolean, Boolean> toggle;
     private CellStyle cellStyle;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void configure(A cfg) {
         Line useOn = Annotator.of(cfg)
@@ -28,18 +43,32 @@ public abstract class Styler<A extends Annotation> implements AnnotablePipe<A, T
         this.toggle = useOn.getToggle();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public StrongType getOutputType() {
         return StrongType.of(ThrowingConsumer.class)
                          .parameterizedWith(Cell.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public StrongType getInputType() {
         return StrongType.of(ThrowingConsumer.class)
                          .parameterizedWith(Cell.class);
     }
 
+    /**
+     * <pre>
+     * Create style cell style.
+     * </pre>
+     *
+     * @param cell the cell
+     * @return the cell style
+     */
     protected CellStyle createStyle(Cell cell) {
         // create the style
         final CellStyle style = cell.getSheet()
@@ -47,10 +76,20 @@ public abstract class Styler<A extends Annotation> implements AnnotablePipe<A, T
                                     .createCellStyle();
         // copy any styles already set
         final CellStyle initialCellStyle = cell.getCellStyle();
-        if (initialCellStyle != null) style.cloneStyleFrom(initialCellStyle);
+        if (initialCellStyle != null) {
+            style.cloneStyleFrom(initialCellStyle);
+        }
         return style;
     }
 
+    /**
+     * <pre>
+     * Gets style.
+     * </pre>
+     *
+     * @param cell the cell
+     * @return the style
+     */
     protected CellStyle getStyle(Cell cell) {
         //singleton
         if (this.cellStyle == null) {
@@ -61,12 +100,16 @@ public abstract class Styler<A extends Annotation> implements AnnotablePipe<A, T
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ThrowingFunction<ThrowingConsumer<Cell>, ThrowingConsumer<Cell>> function() {
         return cellThrowingConsumer -> cell -> {
             //set the style
-            if (this.toggle.apply(this.atomicBoolean))
+            if (this.toggle.apply(this.atomicBoolean)) {
                 cell.setCellStyle(this.getStyle(cell));
+            }
             cellThrowingConsumer.accept(cell);
         };
     }

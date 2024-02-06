@@ -45,7 +45,10 @@ public class DoubleFormatTest extends BaseFormatTest {
             return DoublePipes.DoubleToString.class;
         }
 
-        @Override
+        /**
+* {@inheritDoc}
+*/
+@Override
         public DoubleFormatTest.DoubleFormatAnnotation get() {
             return new DoubleFormatTest.DoubleFormatAnnotation();
         }

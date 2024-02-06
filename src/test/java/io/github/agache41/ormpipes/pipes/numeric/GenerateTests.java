@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static io.github.agache41.ormpipes.config.Annotations.DEFAULT;
+import static io.github.agache41.ormpipes.config.Constants.DEFAULT;
 
 @Execution(ExecutionMode.CONCURRENT)
 @EnabledIfSystemProperty(named = "pipes.test.generate", matches = "true")
@@ -300,7 +300,7 @@ public class GenerateTests extends BaseFormatTest {
 
         String testFileName = "../../src/test/java/" + testClass.getCanonicalName()
                                                                 .replace('.', '/') + suffix + (suffix.isEmpty() ? Zip.Archive.extension : CSVFile.extension);
-        logger.info("Testing {}", testFileName);
+        logger.infof("Testing %s", testFileName);
         return testFileName;
     }
 }

@@ -23,30 +23,59 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 
+/**
+ * <pre>
+ * The type Big decimal pipes.
+ * </pre>
+ */
 public class BigDecimalPipes {
 
+    /**
+     * <pre>
+     * The type Big decimal to string.
+     * </pre>
+     */
     public static class BigDecimalToString extends AbstractFormat<TypeBigDecimal.New, BigDecimal> implements AnnotablePipe<TypeBigDecimal.New, BigDecimal, String> {
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getInputType() {
             return TypeBigDecimal.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void configure(TypeBigDecimal.New cfg) {
             super.configure(cfg);
-            if (cfg.simple()) return;
+            if (cfg.simple()) {
+                return;
+            }
             this.function = this.getBigDecimalNumberFormat(cfg.format(), cfg.languageTag())::format;
         }
     }
 
+    /**
+     * <pre>
+     * The type Parse big decimal.
+     * </pre>
+     */
     public static class ParseBigDecimal extends AbstractParse<TypeBigDecimal.New, BigDecimal> implements AnnotablePipe<TypeBigDecimal.New, String, BigDecimal> {
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getOutputType() {
             return TypeBigDecimal.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void configure(TypeBigDecimal.New cfg) {
             super.configure(cfg);
@@ -59,43 +88,74 @@ public class BigDecimalPipes {
         }
     }
 
+    /**
+     * <pre>
+     * The type Value.
+     * </pre>
+     */
     public static class Value implements AnnotablePipe<TypeBigDecimal.value, Object, BigDecimal> {
 
         private BigDecimal value;
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getInputType() {
             return TypeObject.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getOutputType() {
             return TypeBigDecimal.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void configure(TypeBigDecimal.value cfg) {
             this.value = BigDecimal.valueOf(cfg.value());
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public ThrowingFunction<Object, BigDecimal> function() {
             return object -> this.value;
         }
     }
 
+    /**
+     * <pre>
+     * The type Short value.
+     * </pre>
+     */
     public static class ShortValue extends AbstractNullSafe<BigDecimal, Short> implements AnnotablePipe<Annotation, BigDecimal, Short> {
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getInputType() {
             return TypeBigDecimal.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getOutputType() {
             return TypeShort.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void configure(Annotation cfg) {
             this.function = BigDecimal::shortValue;
@@ -103,18 +163,32 @@ public class BigDecimalPipes {
         }
     }
 
+    /**
+     * <pre>
+     * The type Integer value.
+     * </pre>
+     */
     public static class IntegerValue extends AbstractNullSafe<BigDecimal, Integer> implements AnnotablePipe<Annotation, BigDecimal, Integer> {
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getInputType() {
             return TypeBigDecimal.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getOutputType() {
             return TypeInteger.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void configure(Annotation cfg) {
             this.function = BigDecimal::intValue;
@@ -122,18 +196,32 @@ public class BigDecimalPipes {
         }
     }
 
+    /**
+     * <pre>
+     * The type Long value.
+     * </pre>
+     */
     public static class LongValue extends AbstractNullSafe<BigDecimal, Long> implements AnnotablePipe<Annotation, BigDecimal, Long> {
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getInputType() {
             return TypeBigDecimal.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getOutputType() {
             return TypeLong.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void configure(Annotation cfg) {
             this.function = BigDecimal::longValue;
@@ -141,18 +229,32 @@ public class BigDecimalPipes {
         }
     }
 
+    /**
+     * <pre>
+     * The type Float value.
+     * </pre>
+     */
     public static class FloatValue extends AbstractNullSafe<BigDecimal, Float> implements AnnotablePipe<Annotation, BigDecimal, Float> {
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getInputType() {
             return TypeBigDecimal.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getOutputType() {
             return TypeFloat.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void configure(Annotation cfg) {
             this.function = BigDecimal::floatValue;
@@ -160,18 +262,32 @@ public class BigDecimalPipes {
         }
     }
 
+    /**
+     * <pre>
+     * The type Double value.
+     * </pre>
+     */
     public static class DoubleValue extends AbstractNullSafe<BigDecimal, Double> implements AnnotablePipe<Annotation, BigDecimal, Double> {
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getInputType() {
             return TypeBigDecimal.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getOutputType() {
             return TypeDouble.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void configure(Annotation cfg) {
             this.function = BigDecimal::doubleValue;
@@ -179,18 +295,32 @@ public class BigDecimalPipes {
         }
     }
 
+    /**
+     * <pre>
+     * The type Big integer value.
+     * </pre>
+     */
     public static class BigIntegerValue extends AbstractNullSafe<BigDecimal, BigInteger> implements AnnotablePipe<Annotation, BigDecimal, BigInteger> {
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getInputType() {
             return TypeBigDecimal.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getOutputType() {
             return TypeBigInteger.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void configure(Annotation cfg) {
             this.function = BigDecimal::toBigInteger;
@@ -198,18 +328,32 @@ public class BigDecimalPipes {
         }
     }
 
+    /**
+     * <pre>
+     * The type Big integer exact value.
+     * </pre>
+     */
     public static class BigIntegerExactValue extends AbstractNullSafe<BigDecimal, BigInteger> implements AnnotablePipe<Annotation, BigDecimal, BigInteger> {
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getInputType() {
             return TypeBigDecimal.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getOutputType() {
             return TypeBigInteger.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void configure(Annotation cfg) {
             this.function = BigDecimal::toBigIntegerExact;
@@ -217,18 +361,32 @@ public class BigDecimalPipes {
         }
     }
 
+    /**
+     * <pre>
+     * The type Byte value.
+     * </pre>
+     */
     public static class ByteValue extends AbstractNullSafe<BigDecimal, Byte> implements AnnotablePipe<Annotation, BigDecimal, Byte> {
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getInputType() {
             return TypeBigDecimal.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getOutputType() {
             return TypeByte.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void configure(Annotation cfg) {
             this.function = BigDecimal::byteValue;
@@ -236,28 +394,47 @@ public class BigDecimalPipes {
         }
     }
 
+    /**
+     * <pre>
+     * The type Read cell value.
+     * </pre>
+     */
     public static class ReadCellValue implements AnnotablePipe<TypeBigDecimal.cellValue, Cell, BigDecimal> {
         private ThrowingFunction<Cell, BigDecimal> function;
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getInputType() {
             return StrongType.of(Cell.class);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getOutputType() {
             return TypeBigDecimal.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void configure(TypeBigDecimal.cellValue cfg) {
             this.function = cell -> {
-                if (cfg.nullSafe() && cell.getCellType() == CellType.BLANK) return null;
+                if (cfg.nullSafe() && cell.getCellType() == CellType.BLANK) {
+                    return null;
+                }
                 return BigDecimal.valueOf(cell.getNumericCellValue());
             };
             this.function = this.function.nullSafe(cfg.nullSafe());
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public ThrowingFunction<Cell, BigDecimal> function() {
             return this.function;
@@ -265,22 +442,37 @@ public class BigDecimalPipes {
     }
 
 
+    /**
+     * <pre>
+     * The type Write cell value.
+     * </pre>
+     */
     public static class WriteCellValue implements AnnotablePipe<TypeBigDecimal.cellValue, BigDecimal, ThrowingConsumer<Cell>> {
         private ThrowingFunction<BigDecimal, ThrowingConsumer<Cell>> function;
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public StrongType getInputType() {
             return TypeBigDecimal.strongType;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void configure(TypeBigDecimal.cellValue cfg) {
-            if (cfg.nullSafe())
+            if (cfg.nullSafe()) {
                 this.function = bigDecimal -> bigDecimal == null ? cell -> cell.setBlank() : cell -> cell.setCellValue(bigDecimal.doubleValue());
-            else
+            } else {
                 this.function = bigDecimal -> cell -> cell.setCellValue(bigDecimal.doubleValue());
+            }
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public ThrowingFunction<BigDecimal, ThrowingConsumer<Cell>> function() {
             return this.function;
