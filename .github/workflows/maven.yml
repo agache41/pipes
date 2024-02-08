@@ -24,8 +24,8 @@ jobs:
       - name: Setup Maven Action
         uses: s4u/setup-maven-action@v1.11.0
         with:
-          java-distribution: 'oracle'
-          java-version: 11.0.16
+          java-distribution: 'temurin'
+          java-version: 11.0.22
           maven-version: 3.9.5
           cache: 'maven'
           # cache-dependency-path: 'pom.xml' # optional
