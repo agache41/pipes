@@ -24,6 +24,7 @@ jobs:
       - name: Setup Maven Action
         uses: s4u/setup-maven-action@v1.11.0
         with:
+          distribution: 'oracle'
           java-version: 11.0.16
           maven-version: 3.9.5
       - name: Build with Maven
