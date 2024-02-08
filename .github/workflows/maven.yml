@@ -28,7 +28,6 @@ jobs:
           java-version: 11.0.22
           maven-version: 3.9.5
           cache-enabled: 'true'
-          # cache-dependency-path: 'pom.xml' # optional
       - name: Build with Maven
         run: mvn -B clean package sign:sign --file pom.xml
         env:
