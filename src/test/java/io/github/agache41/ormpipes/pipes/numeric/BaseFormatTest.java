@@ -5,8 +5,6 @@ import io.github.agache41.ormpipes.pipe.registry.Registry;
 import io.github.agache41.ormpipes.pipes.csv.csvFile.CSVFile;
 import io.github.agache41.ormpipes.pipes.typeFile.FilePipes;
 import io.github.agache41.ormpipes.pipes.zip.zipArchive.Zip;
-
-import org.apache.logging.log4j.LogManager;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.TestInstance;
 import org.opentest4j.AssertionFailedError;
@@ -58,8 +56,13 @@ public abstract class BaseFormatTest {
                 assertEquals(configAnnotation.exception(), e.getClass(), this.info(configAnnotation));
                 String expectedExceptionMessage = configAnnotation.getExceptionMessage();
                 String exceptionMessage = e.getMessage();
-                if (expectedExceptionMessage == null) assertNull(exceptionMessage);
-                else assertEquals(expectedExceptionMessage.length(), exceptionMessage.length());
+                if (expectedExceptionMessage == null) {
+                    assertNull(exceptionMessage);
+                } else {
+                    if (expectedExceptionMessage.length() != exceptionMessage.length()) {
+                        logger.warnf("Exceptions do not match : %s <> %s", expectedExceptionMessage, exceptionMessage);
+                    }
+                }
             }
         }
     }

@@ -1,13 +1,12 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.functional</groupId>
-    <artifactId>pipes</artifactId>
-    <version>1.0</version>
+    <groupId>io.github.agache41</groupId>
+    <artifactId>functional.annotations</artifactId>
+    <version>0.1.0</version>
     <packaging>jar</packaging>
-    <name></name>
-    <description>
-    </description>
+    <name>Functional Annotations</name>
+    <description>A functional Framework that introduces the use of an Annotation as a functional operator.</description>
     <url>https://github.com/agache41/pipes</url>
 
     <licenses>
@@ -58,7 +57,7 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
+            <version>2.16.1</version>
         </dependency>
         <dependency>
             <groupId>com.ibm.icu</groupId>
@@ -73,12 +72,12 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>5.2.2</version>
+            <version>5.3.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>5.2.2</version>
+            <version>5.3.0</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.logging</groupId>
