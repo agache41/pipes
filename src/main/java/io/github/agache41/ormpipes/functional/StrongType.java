@@ -26,6 +26,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.lang.Thread.currentThread;
+
 /**
  * <pre>
  * The StrongType encapsulates a complex parameterized Java type.
@@ -153,7 +155,11 @@ public class StrongType implements Type {
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException(e);
+            try {
+                return currentThread().getContextClassLoader().loadClass(className);
+            } catch (ClassNotFoundException e1) {
+                throw new IllegalArgumentException(e);
+            }
         }
     }
 
