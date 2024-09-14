@@ -60,9 +60,9 @@ It also provides converters for all data types (String, Numeric, Date and Time) 
 The library can be very easily extended to add more functionality by adding new Annotations, reusing and extending the provided components.
 
 - [Quick start](#quick-start)
-    - [Entity](#entity)
-    - [Resource Service](#resource-service)
-    - [Updating](#updating)
+    - [CSV File](#csv-file)
+    - [Bean](#bean)
+    - [CSV Parsing](#csv-parsing)
     - [Data Access](#data-access)
     - [Resource Service again](#resource-service-again)
     - [Testing](#testing)
@@ -77,7 +77,7 @@ The library can be very easily extended to add more functionality by adding new 
 
 Let's start with a csv file and a java bean.
 
-### File
+### CSV File
 
 ```text
 
@@ -144,7 +144,7 @@ public class CSVBean {
 
 Notice the used @Data annotation from [Lombok](https://projectlombok.org/).
 
-### Parsing
+### CSV Parsing
 
 Extend your **Parser**
 from [StringToStreamOfBeansParser](src/main/java/io/github/agache41/ormpipes/pipes/base/parser/StringToStreamOfBeansParser.java):
@@ -175,7 +175,9 @@ void test() throws Throwable {
   assertThat(this.beans).hasSameElementsAs(readout);
 }
 ```
-and ... you're pretty much done. Complete code example [Here](src/test/java/examples/csv/CSVTest.java):
+and ... you're pretty much done.
+
+Complete code example [here.](src/test/java/examples/csv/stringToBean/CSVTest.java):
 
 For the **Parser** class the following combinations are already provided :
 | Input Type|  Output a single Bean             | Output a Stream of Beans        |
@@ -184,87 +186,106 @@ For the **Parser** class the following combinations are already provided :
 | File      |  [FileToBeanParser](src/main/java/io/github/agache41/ormpipes/pipes/base/parser/FileToBeanParser.java)    |  [FileToStreamOfBeansParser](src/main/java/io/github/agache41/ormpipes/pipes/base/parser/FileToStreamOfBeansParser.java)    |
 
 
-### Updating
+### File Parsing
 
-What does the [@Update](src/main/java/io/github/agache41/generic/rest/jpa/update/Update.java) annotation do ?
-
-The Resource Service uses the entity as both [DAO](https://en.wikipedia.org/wiki/Data_access_object)
-and [DTO](https://en.wikipedia.org/wiki/Data_transfer_object). Upon update though it is important to be able to
-configure which fields participate in the update process and how null values impact that.
-
-When a field is annotated, it will be updated from the provided source during a PUT or POST operation.
-
-When used on the class, all fields will be updated, except the ones annotated
-with [@Update.excluded](src/main/java/io/github/agache41/generic/rest/jpa/update/Update.java) annotation.
-
-If a field is not annotated, it will not participate in the update process. That is general the case for the id field
-and for our last field in the example (age).
-
-By default, during the update the value can not be set to null, so if a null value is received, it will be skipped.
-Exception can be enforced with @Update(notNull = false) but only when @NotNull is not used on the field.
-This is only recommended to be used when the update source transfer object is always complete.
-
-Every entity participating in this update process must implement
-the [Updatable](src/main/java/io/github/agache41/generic/rest/jpa/update/Updatable.java) interface.
-The root entity must also implement
-the [PrimaryKey](src/main/java/io/github/agache41/generic/rest/jpa/dataAccess/PrimaryKey.java) interface and provide a
-unique id field.
-If the primary key of the table is composed of several database
-columns, [@EmbeddedId](https://jakarta.ee/specifications/persistence/3.2/apidocs/jakarta.persistence/jakarta/persistence/embeddedid)
-must be used.
-
-### Data Access
-
-Extending the [DAO](https://en.wikipedia.org/wiki/Data_access_object) layer
-
-In complex cases the **Data Access** of the entity must be extended, by adding the new data methods.
-Let's start by extending [DataAccess](src/main/java/io/klebrit/generic/api/dataAccess/DataAccess.java).
+The previous example had as input parameter a string providing the file name.
+But what if we want to start directly with a file?
+The first Annotation from the example (@TypeFile.NewResource) was responsible with reading/creating a file based on the resources default path.
+By removing it, the Bean will be parsed with a File as input : 
 
 ```java
-
-@Dependent
-public class ModellDataAccess extends DataAccess<Modell, Long> {
-    @Inject
-    public ModellDataAccess() {
-        super(Modell.class, Long.class);
-    }
-
-    public List<Modell> getAllModellsOver100() {
-        CriteriaBuilder criteriaBuilder = em().getCriteriaBuilder();
-        CriteriaQuery<Modell> query = criteriaBuilder.createQuery(type);
-        Root<Modell> entity = query.from(type);
-        return em().createQuery(query.select(entity)
-                                     .where(criteriaBuilder.greaterThan(entity.get("age"), 100L)))
-                   .getResultList();
-    }
-
-}
-
+@Data
+@IOStream.FileBased
+@IOEncoding.Automatic
+@TypeString.IOStreamLines(separator = TypeString.IOStreamLines.CR)
+@TypeString.Array(separator = ";")
+@CSVFile(namingMethod = NamingMethod.JavaFieldNames, positionMethod = PositionMethod.Fields, model = Model.Fixed)
+public class CSVFileBean {...}
 ```
-
-The method getAllModellsOver100() uses the underlining em() method to access
-the available [EntityManager](https://docs.oracle.com/javaee%2F7%2Fapi%2F%2F/javax/persistence/EntityManager.html) and
-builds the query using
-the [CriteriaBuilder](https://docs.jboss.org/hibernate/stable/entitymanager/reference/en/html/querycriteria.html).
-
-Or if a [JPQL](https://en.wikibooks.org/wiki/Java_Persistence/JPQL) approach is to be considered :
+This time the **Parser** will be extended 
+from [FileToStreamOfBeansParser](src/main/java/io/github/agache41/ormpipes/pipes/base/parser/FileToStreamOfBeansParser.java):
 
 ```java
+    private final String testFileName = "csvFile.csv";
+    private final File file = this.getTestFile(testFileName);
+    private final List<CSVFileBean> beans = createBeans();
 
-@Dependent
-public class ModellDataAccess extends DataAccess<Modell, Long> {
-    @Inject
-    public ModellDataAccess() {
-        super(Modell.class, Long.class);
-    }
+    @Test
+    void fileToStreamOfBeansTest() throws Throwable {
 
-    public List<Modell> getAllModellsOver100() {
-        return em().createQuery(" select t from Modell where t.age > 100")
-                   .getResultList();
+        //given
+        FileToStreamOfBeansParser<CSVFileBean> parser = new FileToStreamOfBeansParser<>(CSVFileBean.class);
+
+        this.file.delete();
+        assertFalse(this.file.exists());
+
+        //when
+        parser.write(this.file, this.beans.stream());
+
+        //then
+        assertTrue(this.file.exists());
+
+        LinkedList<CSVFileBean> readout = parser.read(this.file)
+                                                .collect(Collectors.toCollection(LinkedList::new));
+        assertThat(this.beans).hasSameElementsAs(readout);
     }
-}
 
 ```
+Complete code example [here.](src/test/java/examples/csv/fileToBean/CSVFileTest.java):
+
+But what if we want both scenarios? And do not wish to have two classes.
+Even though this can be easily achieved through class extension, the framework offers an even better way : Views. 
+
+### Views
+
+The concept is simple : every Annotation that does not have a specified view belongs to the default view. This is valid for all the annotations from all the examples.
+
+When a view is specified to an annotation, the annotation will be available only when the view is selected.
+
+When a view is specified to a parser, the parser will use all the annotations in the default view and the ones in the select view.
+
+Specified views do not impact the order of the annotations.
+
+This allows very flexible combinations in which, for example, we can specify a view for files in the resource folder (for test purposes) and another view for files with absolute path in production use.
+
+```java
+@Data
+@TypeFile.NewResource(view = "fileName")
+@IOStream.FileBased
+@IOEncoding.Automatic
+@TypeString.IOStreamLines(separator = TypeString.IOStreamLines.CR)
+@TypeString.Array(separator = ";")
+@CSVFile(namingMethod = NamingMethod.JavaFieldNames, positionMethod = PositionMethod.Fields, model = Model.Fixed)
+public class CSVBeanWithView {...}
+```
+Extend your **Parser**
+from [StringToStreamOfBeansParser](src/main/java/io/github/agache41/ormpipes/pipes/base/parser/StringToStreamOfBeansParser.java)
+and add a view parameter:
+
+```java
+@Test
+void stringToStreamOfBeansTestWithView() throws Throwable {
+
+  //given
+  StringToStreamOfBeansParser<CSVBeanWithView> parser = new StringToStreamOfBeansParser<>(CSVBeanWithView.class,"fileName");
+
+  this.file.delete();
+  assertFalse(this.file.exists());
+
+  //when
+  parser.write(this.testFileName, this.beans.stream());
+
+  //then
+  assertTrue(this.file.exists());
+
+  LinkedList<CSVBeanWithView> readout = parser.read(this.testFileName)
+                                              .collect(Collectors.toCollection(LinkedList::new));
+  assertThat(this.beans).hasSameElementsAs(readout);
+}
+```
+Complete code example [here.](src/test/java/examples/csv/stringToBeanWithView/CSVTestWithView.java)
+
+
 
 ### Resource Service again
 
