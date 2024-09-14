@@ -177,12 +177,11 @@ void test() throws Throwable {
 ```
 and ... you're pretty much done. Complete code example [Here](src/test/java/examples/csv/CSVTest.java):
 
-For the **Parser** class the following combinations are available :
+For the **Parser** class the following combinations are already provided :
 | Input Type|  Output a single Bean             | Output a Stream of Beans        |
 |-----------|-----------------------------------|---------------------------------|
 | String    |  [StringToBeanParser](src/main/java/io/github/agache41/ormpipes/pipes/base/parser/StringToBeanParser.java)    |  [StringToStreamOfBeansParser](src/main/java/io/github/agache41/ormpipes/pipes/base/parser/StringToStreamOfBeansParser.java)    |
 | File      |  [FileToBeanParser](src/main/java/io/github/agache41/ormpipes/pipes/base/parser/FileToBeanParser.java)    |  [FileToStreamOfBeansParser](src/main/java/io/github/agache41/ormpipes/pipes/base/parser/FileToStreamOfBeansParser.java)    |
-
 
 
 ### Updating
