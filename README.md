@@ -285,185 +285,41 @@ void stringToStreamOfBeansTestWithView() throws Throwable {
   assertThat(this.beans).hasSameElementsAs(readout);
 }
 ```
+And the very same bean is also available for a file as input :
+```java
+    private final String testFileName = "csvFile.csv";
+    private final File file = this.getTestFile(testFileName);
+    private final List<CSVFileBean> beans = createBeans();
+
+    @Test
+    void fileToStreamOfBeansTest() throws Throwable {
+    
+      //given
+      FileToStreamOfBeansParser<CSVBeanWithView> parser = new FileToStreamOfBeansParser<>(CSVBeanWithView.class);
+    
+      this.file.delete();
+      assertFalse(this.file.exists());
+    
+      //when
+      parser.write(this.file, this.beans.stream());
+    
+      //then
+      assertTrue(this.file.exists());
+    
+      LinkedList<CSVBeanWithView> readout = parser.read(this.file)
+                                                  .collect(Collectors.toCollection(LinkedList::new));
+      assertThat(this.beans).hasSameElementsAs(readout);
+    }
+
+```
+
 Complete code example [here](src/test/java/examples/csv/stringToBeanWithView/CSVTestWithView.java).
 
 
+### Excel
 
-### Resource Service again
 
-Now let's use this newly ModellDataAccess in our Resource Service:
 
-```java
-
-@Getter
-@Path("/modell")
-@Transactional
-
-public class ModellResourceService extends AbstractResourceServiceImpl<Modell, Long> {
-
-    @Inject
-    ModellDataAccess dataAccess;
-
-    /**
-     * Finds and returns all the models over 100
-     *
-     * @return the models list.
-     */
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/over/100")
-    public List<Modell> getAllModellsOver100() {
-        return this.getDataAccess()
-                   .getAllModellsOver100();
-    }
-}
-
-```
-
-and we're ready to go:
-
-- [GET] /modell/over/100 - Finds and returns all the models over 100
-
-Please do notice the this.getDataAccess() method that gets overridden behind the scenes
-with [Lombok](https://projectlombok.org/)
-
-### Testing
-
-So far so good. But how can I be sure that the generated services do really work on my platform or with my entities ?
-Not to mention that there are already 17 methods in the service, and that goes for each entity.
-
-Let's start by creating the **TestUnit** by
-extending  [AbstractResourceServiceImplTest](src/main/java/io/github/agache41/generic/rest/jpa/resourceService/AbstractResourceServiceImpl.java).
-
-```java
-
-@QuarkusTest
-@Transactional
-public class ModellResourceServiceTest extends AbstractResourceServiceImplTest<Modell, Long> {
-
-    static final String path = "/modell";
-    private static final String stringField = "stringVal";
-    private static final Producer<Modell> producer;
-    private static final List<Modell> insertData;
-    private static final List<Modell> updateData;
-
-    static {
-        RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
-    }
-
-    static {
-        producer = Producer.ofClass(Modell.class)
-                           .withList(LinkedList::new)
-                           .withMap(LinkedHashMap::new)
-                           .withSize(Config.collectionSize);
-        insertData = producer.produceList();
-        updateData = producer.changeList(insertData);
-    }
-
-    public ModellResourceServiceTest() {
-        super(Modell.class, //
-              path, //
-              insertData, //
-              updateData,
-              stringField); //
-    }
-}
-
-```
-
-Notice the use of the [Producer](src/test/java/io/github/agache41/generic/rest/jpa/producer/Producer.java) class that
-generates automatically complete lists with instance objects for tests.
-
-The test goes through all the provided methods :
-
-![ModelResourcesServiceTest](/readme.res/ModelResourcesServiceTest.png)
-
-Notice that the actual entities used in the test are omitted for simplicity from the example.
-
-### Testing my own methods
-
-The ModellResourceServiceTest is a UnitTest where test methods can be further added :
-
-```java
-
-@QuarkusTest
-public class ModellResourceServiceTest extends AbstractResourceServiceImplTest<Modell, Long> {
-    public ModellResourceServiceTest() {
-        /// .....
-    }
-
-    @Test
-    @Order(1000)
-    void testGetAllModellsOver100() {
-
-        /// your favorite method gets tested here 
-    }
-
-}
-
-```
-
-Notice the use of the @Order(1000) annotation, this will ensure the correct order of running.
-
-### Generating Front End model classes and services.
-
-My application grows steadily and every day I add new entities. It's time to present the resource services to my clients
-in a
-ready to code manner.
-The smallrye-openapi open API setting ensures the generation of the open API yaml file.
-
-```properties
-quarkus.smallrye-openapi.store-schema-directory=openapi/api
-quarkus.smallrye-openapi.open-api-version=3.0.3
-```
-
-Then the `org.openapitools:openapi-generator-maven-plugin:7.0.1` plugin will generate the classes for the front end.
-Here is an example for [Angular](https://angular.io/) using [Typescript](https://www.typescriptlang.org/).
-
-```xml
-
-<profile>
-    <id>generate</id>
-    <activation>
-        <property>
-            <name>generate</name>
-        </property>
-    </activation>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.openapitools</groupId>
-                <artifactId>openapi-generator-maven-plugin</artifactId>
-                <!-- RELEASE_VERSION -->
-                <version>7.0.1</version>
-                <!-- /RELEASE_VERSION -->
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <inputSpec>${project.basedir}/openapi/api/openapi.yaml</inputSpec>
-                            <generatorName>typescript-angular</generatorName>
-                            <configOptions>
-                                <sourceFolder>src/gen/java/main</sourceFolder>
-                            </configOptions>
-                            <output>${project.basedir}/openapi/generated</output>
-                            <verbose>true</verbose>
-                            <cleanupOutput>true</cleanupOutput>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-</profile>
-```
-
-Here ist an example of the generated files:
-
-![OpenapiGeneration](/readme.res/OpenapiGeneration.png)
 
 ## Demo
 
