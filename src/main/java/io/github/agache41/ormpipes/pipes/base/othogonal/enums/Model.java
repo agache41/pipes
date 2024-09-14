@@ -25,18 +25,21 @@ public enum Model {
     /**
      * <pre>
      * Fixed model.
+     * Used to describe a Column Model where the name and the positions of the the columns are predefined and do not change.
      * </pre>
      */
     Fixed(true, true),
     /**
      * <pre>
      * Variable positions model.
+     * Used to describe a Column Model where the name of the the columns are predefined and do not change, but the columns may occur in a different order.
      * </pre>
      */
     VariablePositions(true, false),
     /**
      * <pre>
      * Variable names model.
+     * Used to describe a Column Model where the positions of the the columns are predefined and do not change, but the columns names may change.
      * </pre>
      */
     VariableNames(false, true);

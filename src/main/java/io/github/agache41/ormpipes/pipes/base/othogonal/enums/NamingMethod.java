@@ -27,6 +27,7 @@ public enum NamingMethod implements BiFunction<String, String, String> {
     /**
      * <pre>
      * The Accessor names.
+     * The names of the columns will be taken from the accessor fields names ex: CSVAccessor Annotation
      * </pre>
      */
     AccessorNames((accessorName, fieldName) -> {
@@ -38,6 +39,7 @@ public enum NamingMethod implements BiFunction<String, String, String> {
     /**
      * <pre>
      * Java field names naming method.
+     * The names of the columns will be taken from the java fields names
      * </pre>
      */
     JavaFieldNames((accessorName, fieldName) -> fieldName);

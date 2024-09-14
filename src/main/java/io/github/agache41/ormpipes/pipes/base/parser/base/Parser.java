@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package io.github.agache41.ormpipes.pipes.base.parser;
+package io.github.agache41.ormpipes.pipes.base.parser.base;
 
 import io.github.agache41.ormpipes.functional.ThrowingConsumer;
 import io.github.agache41.ormpipes.pipe.AnnotablePipe;

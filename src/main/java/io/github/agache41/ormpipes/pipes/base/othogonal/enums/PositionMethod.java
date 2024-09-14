@@ -27,12 +27,14 @@ public enum PositionMethod implements BiFunction<Integer, Integer, Integer> {
     /**
      * <pre>
      * Csv fields position method.
+     * The positions of the columns will be taken from the CSVAccessor Annotation
      * </pre>
      */
     CSVFields((csvColumnPosition, fieldPosition) -> csvColumnPosition),
     /**
      * <pre>
      * Fields position method.
+     * The positions of the columns will be taken from the Position Annotation
      * </pre>
      */
     Fields((csvColumnPosition, fieldPosition) -> fieldPosition);

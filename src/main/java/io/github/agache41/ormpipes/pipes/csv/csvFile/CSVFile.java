@@ -23,7 +23,7 @@ import io.github.agache41.ormpipes.pipes.base.othogonal.OrthogonalFile;
 import io.github.agache41.ormpipes.pipes.base.othogonal.enums.Model;
 import io.github.agache41.ormpipes.pipes.base.othogonal.enums.NamingMethod;
 import io.github.agache41.ormpipes.pipes.base.othogonal.enums.PositionMethod;
-import io.github.agache41.ormpipes.pipes.base.parser.Parser;
+import io.github.agache41.ormpipes.pipes.base.parser.base.Parser;
 
 import java.lang.annotation.*;
 import java.util.stream.Stream;

@@ -26,7 +26,7 @@ import io.github.agache41.ormpipes.pipes.base.othogonal.OrthogonalFile;
 import io.github.agache41.ormpipes.pipes.base.othogonal.enums.Model;
 import io.github.agache41.ormpipes.pipes.base.othogonal.enums.NamingMethod;
 import io.github.agache41.ormpipes.pipes.base.othogonal.enums.PositionMethod;
-import io.github.agache41.ormpipes.pipes.base.parser.Parser;
+import io.github.agache41.ormpipes.pipes.base.parser.base.Parser;
 import io.github.agache41.ormpipes.pipes.spreadSheet.base.EmptyStyleProvider;
 import io.github.agache41.ormpipes.pipes.spreadSheet.base.IdentityCell;
 import io.github.agache41.ormpipes.pipes.spreadSheet.base.Line;

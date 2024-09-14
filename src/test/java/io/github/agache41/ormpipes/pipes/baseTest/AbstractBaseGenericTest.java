@@ -16,7 +16,7 @@
 
 package io.github.agache41.ormpipes.pipes.baseTest;
 
-import io.github.agache41.ormpipes.pipes.base.parser.Parser;
+import io.github.agache41.ormpipes.pipes.base.parser.base.Parser;
 import io.github.agache41.ormpipes.pipes.baseTest.values.AbstractValuesFeeder;
 import io.github.agache41.ormpipes.pipes.baseTest.values.TestBean;
 import io.github.agache41.ormpipes.pipes.baseTest.values.Values;

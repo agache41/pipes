@@ -16,35 +16,41 @@
 
 package io.github.agache41.ormpipes.pipes.base.parser;
 
+import io.github.agache41.ormpipes.pipes.base.parser.base.Parser;
+
+import java.io.File;
+import java.util.stream.Stream;
+
 /**
  * <pre>
- * The type String object parser.
+ * The type File to stream of beans parser.
  * </pre>
  *
  * @param <T> the type parameter
  */
-public abstract class StringObjectParser<T> extends Parser<T, String, T> {
+public class FileToStreamOfBeansParser<T> extends Parser<T, File, Stream<T>> {
+
     /**
      * <pre>
-     * Instantiates a new String object parser.
+     * Instantiates a new File to stream of beans parser.
      * </pre>
      *
      * @param clazz the clazz
      */
-    public StringObjectParser(Class<T> clazz) {
-        super(clazz, String.class);
+    public FileToStreamOfBeansParser(Class<T> clazz) {
+        super(clazz, File.class);
     }
 
     /**
      * <pre>
-     * Instantiates a new String object parser.
+     * Instantiates a new File to stream of beans parser.
      * </pre>
      *
      * @param clazz the clazz
      * @param view  the view
      */
-    public StringObjectParser(Class<T> clazz,
-                              String view) {
-        super(clazz, String.class, view);
+    public FileToStreamOfBeansParser(Class<T> clazz,
+                                     String view) {
+        super(clazz, File.class, view);
     }
 }

@@ -16,11 +16,40 @@
 
 package io.github.agache41.ormpipes.pipes.base.parser;
 
+import io.github.agache41.ormpipes.pipes.base.parser.base.Parser;
+
 import java.io.File;
 
-public class FileParser<T> extends Parser<T, File, T> {
+/**
+ * <pre>
+ * The type File to bean parser.
+ * </pre>
+ *
+ * @param <T> the type parameter
+ */
+public class FileToBeanParser<T> extends Parser<T, File, T> {
 
-    public FileParser(Class<T> clazz) {
+    /**
+     * <pre>
+     * Instantiates a new File to bean parser.
+     * </pre>
+     *
+     * @param clazz the clazz
+     */
+    public FileToBeanParser(Class<T> clazz) {
         super(clazz, File.class);
+    }
+
+    /**
+     * <pre>
+     * Instantiates a new File to bean parser.
+     * </pre>
+     *
+     * @param clazz the clazz
+     * @param view  the view
+     */
+    public FileToBeanParser(Class<T> clazz,
+                            String view) {
+        super(clazz, File.class, view);
     }
 }
