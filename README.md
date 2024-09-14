@@ -177,7 +177,7 @@ void test() throws Throwable {
 ```
 and ... you're pretty much done.
 
-Complete code example [here.](src/test/java/examples/csv/stringToBean/CSVTest.java):
+Complete code example [here.](src/test/java/examples/csv/stringToBean/CSVTest.java)
 
 For the **Parser** class the following combinations are already provided :
 | Input Type|  Output a single Bean             | Output a Stream of Beans        |
@@ -231,7 +231,7 @@ from [FileToStreamOfBeansParser](src/main/java/io/github/agache41/ormpipes/pipes
     }
 
 ```
-Complete code example [here.](src/test/java/examples/csv/fileToBean/CSVFileTest.java):
+Complete code example [here.](src/test/java/examples/csv/fileToBean/CSVFileTest.java)
 
 But what if we want both scenarios? And do not wish to have two classes.
 Even though this can be easily achieved through class extension, the framework offers an even better way : Views. 
