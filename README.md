@@ -178,10 +178,10 @@ void test() throws Throwable {
 and ... you're pretty much done. Complete code example [Here](src/test/java/examples/csv/CSVTest.java):
 
 For the **Parser** class the following combinations are available :
-| Feature   | Description                       | Link                            |
+| Input Type|  Output a single Bean             | Output a Stream of Beans        |
 |-----------|-----------------------------------|---------------------------------|
-| Feature 1 | A feature with **bold** text.     | [Link](https://example.com)     |
-| Feature 2 | An image: ![Alt](image-url.png)   | [More Info](https://example.com)|
+| String    |  [StringToBeanParser](src/main/java/io/github/agache41/ormpipes/pipes/base/parser/StringToBeanParser.java)    |  [StringToStreamOfBeansParser](src/main/java/io/github/agache41/ormpipes/pipes/base/parser/StringToStreamOfBeansParser.java)    |
+| File      | An image: ![Alt](image-url.png)   | [More Info](https://example.com)|
 
 
 
