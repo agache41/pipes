@@ -1,6 +1,5 @@
 package examples.csv;
 
-import io.github.agache41.ormpipes.pipes.base.parser.StringToBeanParser;
 import io.github.agache41.ormpipes.pipes.base.parser.StringToStreamOfBeansParser;
 import io.github.agache41.ormpipes.pipes.typeFile.FilePipes;
 import org.junit.jupiter.api.Test;
@@ -10,9 +9,11 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -35,6 +36,10 @@ public class CSVTest {
 
         //then
         assertTrue(this.file.exists());
+
+        LinkedList<CSVBean> readout = parser.read(this.testFileName)
+                                            .collect(Collectors.toCollection(LinkedList::new));
+        assertThat(this.beans).hasSameElementsAs(readout);
     }
 
     public File getTestFile(String testFileName) {

@@ -2,7 +2,7 @@
 
 ## Intrigue
 
-What would you say the following code snipet does ?
+What would you say the following code snippet does ?
 ```java
 @TypeFile.New
 @IOStream.FileBased
@@ -14,25 +14,26 @@ What would you say the following code snipet does ?
 @CSVFile(positionMethod = PositionMethod.Fields)
 public class CSVTestBean { ... }
 ```
-Well, if you guessed that it creates a file, opens a IOStream on it, reads a Zip archive, streams the File Entry, identifies the used encoding and opens a Reader, reads the content line by line, than reads each line in a String Array and finally parses the csv content,
-than you are probably right. And to be accurate it also does the complete reverse process when saving is called.
+Well, if you guessed that it creates a file, then opens a IOStream on it, reads it as a Zip archive, seeks and streams the File Entry named "data.csv", identifies the used encoding and opens a Reader on it, reads the content line by line, reads each line in a String Array and finally parses the csv content in a Stream of Java Beans, than you are probably right. And to be accurate it also does the complete reverse process when saving is called.
 This is achieved by simply chaining the used annotations as they were functions. Or functional operators. Or functional annotations.
 
-Let's have a look on the following examples that use well known annotations :
+Let's have a look on the following example that uses well known annotations :
 ```java
 @Temporal(TemporalType.TIMESTAMP)
 @Column                                                                               
 private Date myDate;
 .....
 @Convert(converter = MyConverter.class)
+@Column
 private MyData myData;
 .....
 @Getter
-private myData
+@Column
+private myInfo;
 ```
-The Annotations @Temporal , @Convert and @Getter are being used to enhance the behaviour of the given field and each of them introduce a change.
-That is, they either add or chain a function to an already existing getter or setter and modify the value.
-But if we try to look at these examples from a functional programming perspective we can say (more or less) that to those fields functional operators were applied. 
+The Annotations @Temporal , @Convert and @Getter are being used here to enhance the behaviour of the given fields and each of them introduce a change.
+That is, they either add or chain a function to an already existing getter or setter and thus modify the resulting value.
+But if we try to look at these examples from a functional programming perspective we can say (more or less) that to those fields (or getters) functional operators were applied (or chained). 
 
 This library is trying to answer the question "How can we generalize this ?"
 
@@ -40,16 +41,23 @@ This library is trying to answer the question "How can we generalize this ?"
 
 Annotation as a functional operator
 
-**Functional Annotations** is a java Library that aims at implementing complex data processing processes by decorating Object Relational Mapping Patterns with Annotations.
+**Functional Annotations** is a java Library that aims at implementing data processes by decorating Object Relational Mapping Patterns with Annotations.
 
-The idea behind it is that just by adding Annotations on an already existing POJO Bean it will enhance the functionality of the Bean, by adding functional Methods. 
+The idea behind it is that just by adding Annotations on an already existing POJO Bean, functional Methods will be chained and the Bean will enhance its functionality. 
 The main area of applicability for these types of patterns lies in ORM based implementations for data parsing and saving.
 
-But the most notable advantage of the library is that it can offer the possibility of a very clean implementations for more enhanced data parsing frameworks. Who ever tried to implement an annotation driven solution to a computing problem saw that the more annotations are being used, the more complex and difficult to maintain the code becomes. On the other side when using annotation as a function (or a functional operator) the interaction only occurs between the two neighboring functions, and this proves to be much easily to control, testing can be done in isolation and annotations can be easily reused. This degree of flexibility plays a key role when designing complex ORM solution and is the main reason behind this library.       
+But the most notable advantage of the library is that it can offer the possibility of a very clean implementations for more enhanced data parsing frameworks. 
+Who ever tried to implement an annotation driven solution to a data model saw that the more annotations are being used,
+the more complex and difficult to maintain the code becomes.
+On the other side when using annotation as a function (or a functional operator) the interaction only occurs between the two neighboring functions.
+This is just like using functional methods chaining to a Stream.
+And this proves to be much easily to control. Testing can be done in isolation and most notably, annotations can be easily reused.
+This degree of flexibility plays a key role when designing complex ORM solution and is actually the main reason behind this library.       
 
-The library contains already defined annotation that can be used for CSV and Excel file parsing. It also provides converters for all data types (String, Numeric, Date and Time) and functions for basic classes like string or file.
+The library contains already defined annotation that can be used for CSV and Excel file parsing.
+It also provides converters for all data types (String, Numeric, Date and Time) and functions for basic classes like string or file.
 
-The library can be very easily extended to add more functionality by reusing and extending the provided components.
+The library can be very easily extended to add more functionality by adding new Annotations, reusing and extending the provided components.
 
 - [Quick start](#quick-start)
     - [Entity](#entity)
@@ -138,46 +146,45 @@ Notice the used @Data annotation from [Lombok](https://projectlombok.org/).
 
 ### Parsing
 
-Extend your **resource service**
-from [AbstractResourceServiceImpl](src/main/java/io/github/agache41/generic/rest/jpa/resourceService/AbstractResourceServiceImpl.java):
+Extend your **Parser**
+from [StringToStreamOfBeansParser](src/main/java/io/github/agache41/ormpipes/pipes/base/parser/StringToStreamOfBeansParser.java):
 
 ```java
 
-@Path("/modell")
-@Transactional
-public class ModellResourceService extends AbstractResourceServiceImpl<Modell, Long> {
+private final String testFileName = "csvFile.csv";
+private final File file = this.getTestFile(testFileName);
+private final List<CSVBean> beans = createBeans();
+
+@Test
+void test() throws Throwable {
+
+  //given
+  StringToStreamOfBeansParser<CSVBean> parser = new StringToStreamOfBeansParser<>(CSVBean.class);
+
+  this.file.delete();
+  assertFalse(this.file.exists());
+
+  //when
+  parser.write(this.testFileName, this.beans.stream());
+
+  //then
+  assertTrue(this.file.exists());
+
+  LinkedList<CSVBean> readout = parser.read(this.testFileName)
+                                      .collect(Collectors.toCollection(LinkedList::new));
+  assertThat(this.beans).hasSameElementsAs(readout);
 }
 ```
+and ... you're pretty much done. Complete code example [Here](src/test/java/examples/csv/CSVTest.java):
 
-and ... you're pretty much done.
+For the **Parser** class the following combinations are available :
+| Feature   | Description                       | Link                            |
+|-----------|-----------------------------------|---------------------------------|
+| Feature 1 | A feature with **bold** text.     | [Link](https://example.com)     |
+| Feature 2 | An image: ![Alt](image-url.png)   | [More Info](https://example.com)|
 
-For the **Modell** entity the following REST services are available :
 
-- GET /modell/{id} - finds and returns the corresponding entity for the given path id.
-- POST /modell/byId - finds and returns the corresponding entity for the given body id.
-- GET /modell/all/asList - returns all the entities for the given table.
-- GET /modell/byIds/{ids}/asList - finds and returns the corresponding entity for the given path list of id's.
-- POST /modell/byIds/asList - finds and returns the corresponding entity for the given list of body id's.
-- GET /modell/filter/{stringField}/equals/{value}/asList - finds all entities whose value in a specified string field is
-  equal to the given value.
-- GET /modell/filter/{stringField}/like/{value}/asList - finds all entities whose value in a specified field is like the
-  given path value.
-- GET /modell/filter/{stringField}/in/{values}/asList - finds all entities whose value in a specified field is in the
-  given path values list.
-- GET /modell/autocomplete/{stringField}/like/{value}/asSortedSet - finds all values in a field whose value is like the
-  given value.
-- GET /modell/autocompleteIds/{stringField}/like/{value}/asList - finds all entities whose value in a field is like the
-  given value, groups them, and returns for each the corresponding id.
-- POST /modell/filter/content/equals/value/asList - finds all entities that equals a given body content object.
-- POST /modell/filter/content/in/values/asList - finds all entities that are in a given body content list of given
-  values.
-- POST /modell/ - inserts a new entity in the database or updates an existing one.
-- POST /modell/list/asList - inserts a list of new entities in the database or updates the existing ones.
-- PUT /modell/ - updates an existing entity by id.
-- PUT /modell/list/asList - updates existing entities by id.
-- DELETE /modell/{id}/ - deletes the entity for the given id.
-- DELETE /modell/byIds - deletes all the entities for the given ids in the request body
-- DELETE /modell/byIds/{ids} - deletes all the entities for the given ids.
+
 
 ### Updating
 
