@@ -51,7 +51,7 @@ Who ever tried to implement an annotation driven solution to a data model saw th
 the more complex and difficult to maintain the code becomes.
 On the other side when using annotation as a function (or a functional operator) the interaction only occurs between the two neighboring functions.
 This is just like using functional methods chaining to a Stream.
-And this proves to be much easily to control. Testing can be done in isolation and most notably, annotations can be easily reused.
+And this proves to be easily to control. Testing can be done in isolation and most notably, annotations can be everywhere reused.
 This degree of flexibility plays a key role when designing complex ORM solution and is actually the main reason behind this library.       
 
 The library contains already defined annotation that can be used for CSV and Excel file parsing.
@@ -191,7 +191,7 @@ For the **Parser** class the following combinations are already provided :
 The previous example had as input parameter a string providing the file name.
 But what if we want to start directly with a file?
 The first Annotation from the example (@TypeFile.NewResource) was responsible with reading/creating a file based on the resources default path.
-By removing it, the Bean will be parsed with a File as input : 
+By removing it, the Bean will be parsed with a File as input. This happens because the next Annotation (@IOStream.FileBased) works with an input of File Type, and at saving produces also a File.   
 
 ```java
 @Data
@@ -206,29 +206,29 @@ This time the **Parser** will be extended
 from [FileToStreamOfBeansParser](src/main/java/io/github/agache41/ormpipes/pipes/base/parser/FileToStreamOfBeansParser.java):
 
 ```java
-    private final String testFileName = "csvFile.csv";
-    private final File file = this.getTestFile(testFileName);
-    private final List<CSVFileBean> beans = createBeans();
+private final String testFileName = "csvFile.csv";
+private final File file = this.getTestFile(testFileName);
+private final List<CSVFileBean> beans = createBeans();
 
-    @Test
-    void fileToStreamOfBeansTest() throws Throwable {
+@Test
+void fileToStreamOfBeansTest() throws Throwable {
 
-        //given
-        FileToStreamOfBeansParser<CSVFileBean> parser = new FileToStreamOfBeansParser<>(CSVFileBean.class);
+    //given
+    FileToStreamOfBeansParser<CSVFileBean> parser = new FileToStreamOfBeansParser<>(CSVFileBean.class);
 
-        this.file.delete();
-        assertFalse(this.file.exists());
+    this.file.delete();
+    assertFalse(this.file.exists());
 
-        //when
-        parser.write(this.file, this.beans.stream());
+    //when
+    parser.write(this.file, this.beans.stream());
 
-        //then
-        assertTrue(this.file.exists());
+    //then
+    assertTrue(this.file.exists());
 
-        LinkedList<CSVFileBean> readout = parser.read(this.file)
-                                                .collect(Collectors.toCollection(LinkedList::new));
-        assertThat(this.beans).hasSameElementsAs(readout);
-    }
+    LinkedList<CSVFileBean> readout = parser.read(this.file)
+                                            .collect(Collectors.toCollection(LinkedList::new));
+    assertThat(this.beans).hasSameElementsAs(readout);
+}
 
 ```
 Complete code example [here](src/test/java/examples/csv/fileToBean/CSVFileTest.java).
@@ -238,15 +238,20 @@ Even though this can be easily achieved through class extension, the framework o
 
 ### Views
 
-The concept is simple : every Annotation that does not have a specified view belongs to the default view. This is valid for all the annotations from all the examples.
+The concept is simple : 
+
+Every Annotation that does not have a specified view belongs to the default view. (This is valid for all the annotations from almost all the examples.)
+
+Every Parser that does not have a specified view will use only the annotations in the default view. (This is also valid for the above examples and is generally the default case.)
 
 When a view is specified to an annotation, the annotation will be available only when the view is selected.
 
-When a view is specified to a parser, the parser will use all the annotations in the default view and the ones in the select view.
+When a view is specified to a parser, the parser will use all the annotations in the default view and the ones in the currently provided view.
 
 Specified views do not impact the order of the annotations.
 
 This allows very flexible combinations in which, for example, we can specify a view for files in the resource folder (for test purposes) and another view for files with absolute path in production use.
+Or we can build complete separate hierarchies in different views on the very same Bean, allowing the same Bean to be parsed (or saved) in separate formats , for example CSV and Excel. 
 
 Here is the previous example for a file:
 
@@ -285,31 +290,31 @@ void stringToStreamOfBeansTestWithView() throws Throwable {
   assertThat(this.beans).hasSameElementsAs(readout);
 }
 ```
-And the very same bean is also available for a file as input :
+And the very same bean is also available for a file as input. This time no view parameter is needed, since all the needed annotations are still in the default view.
 ```java
-    private final String testFileName = "csvFile.csv";
-    private final File file = this.getTestFile(testFileName);
-    private final List<CSVFileBean> beans = createBeans();
+private final String testFileName = "csvFile.csv";
+private final File file = this.getTestFile(testFileName);
+private final List<CSVFileBean> beans = createBeans();
 
-    @Test
-    void fileToStreamOfBeansTest() throws Throwable {
-    
-      //given
-      FileToStreamOfBeansParser<CSVBeanWithView> parser = new FileToStreamOfBeansParser<>(CSVBeanWithView.class);
-    
-      this.file.delete();
-      assertFalse(this.file.exists());
-    
-      //when
-      parser.write(this.file, this.beans.stream());
-    
-      //then
-      assertTrue(this.file.exists());
-    
-      LinkedList<CSVBeanWithView> readout = parser.read(this.file)
-                                                  .collect(Collectors.toCollection(LinkedList::new));
-      assertThat(this.beans).hasSameElementsAs(readout);
-    }
+@Test
+void fileToStreamOfBeansTest() throws Throwable {
+
+  //given
+  FileToStreamOfBeansParser<CSVBeanWithView> parser = new FileToStreamOfBeansParser<>(CSVBeanWithView.class);
+
+  this.file.delete();
+  assertFalse(this.file.exists());
+
+  //when
+  parser.write(this.file, this.beans.stream());
+
+  //then
+  assertTrue(this.file.exists());
+
+  LinkedList<CSVBeanWithView> readout = parser.read(this.file)
+                                              .collect(Collectors.toCollection(LinkedList::new));
+  assertThat(this.beans).hasSameElementsAs(readout);
+}
 
 ```
 
@@ -318,6 +323,141 @@ Complete code example [here](src/test/java/examples/csv/stringToBeanWithView/CSV
 
 ### Excel
 
+Now let's parse the same content from an Excel File.
+Consider the following example :
+
+```java
+@Data
+@TypeFile.NewResource
+@IOStream.FileBased
+@SpreadSheet.xlsx
+@SpreadSheet.select(sheetName = "ExcelBean")
+@SpreadSheet.sheet
+public class ExcelFileBean {
+  @Position(0)
+  @SpreadSheet.Header(name = "string0", position = 0)
+  @TypeString.cellValue
+  @TypeString.nullable
+  @Accessor
+  private String string0;
+
+  @Position(1)
+  @SpreadSheet.Header(name = "integer1", position = 1, required = true)
+  @TypeInteger.cellValue
+  @Accessor
+  private Integer integer1;
+
+  @Position(2)
+  @SpreadSheet.Header(name = "long2", position = 2)
+  @TypeLong.cellValue
+  @Accessor
+  private Long long2;
+
+  @Position(3)
+  @SpreadSheet.Header(name = "double3", position = 3, required = true)
+  @TypeDouble.cellValue
+  @Accessor
+  private Double double3;
+
+  @Position(4)
+  @SpreadSheet.Header(name = "float4", position = 4)
+  @TypeFloat.cellValue
+  @Accessor
+  private Float float4;
+
+  @Position(5)
+  @SpreadSheet.Header(name = "localdate5", position = 5)
+  @TypeLocalDate.cellValue
+  @Accessor
+  private LocalDate localdate5;
+
+  @Position(6)
+  @SpreadSheet.Header(name = "date6", position = 6)
+  @TypeDate.cellValue
+  @Accessor
+  private Date date6;
+
+  @Position(7)
+  @SpreadSheet.Header(name = "list7", position = 7)
+  @TypeString.cellValue
+  @TypeString.List(separator = ",")
+  @Accessor
+  private List<String> list7;
+
+}
+```
+Notice the re-used @TypeFile.NewResource and @IOStream.FileBased.
+The other annotations are changed and the new ones, based on @SpreadSheet, are responsible for Spreadsheet parsing and saving.
+Also on the Fields the annotations change to accommodate the new data format.
+But some do actually remain (@Position,  @TypeString.nullable). I also plan a unified @Accessor annotation in the near future that will furthermore reduce the changes.  
+
+Now let's parse it.
+
+```java
+private final String testFileName = "excelFile.xlsx";
+private final File file = this.getTestFile(testFileName);
+private final List<ExcelBean> beans = createBeans();
+
+@Test
+void stringToStreamOfBeansTest() throws Throwable {
+
+  //given
+  StringToStreamOfBeansParser<ExcelBean> parser = new StringToStreamOfBeansParser<>(ExcelBean.class);
+
+  this.file.delete();
+  assertFalse(this.file.exists());
+
+  //when
+  parser.write(this.testFileName, this.beans.stream());
+
+  //then
+  assertTrue(this.file.exists());
+
+  LinkedList<ExcelBean> readout = parser.read(this.testFileName)
+                                        .collect(Collectors.toCollection(LinkedList::new));
+  assertThat(this.beans).hasSameElementsAs(readout);
+}
+  
+```
+The parser works in the very same way as the one for csv, and the code is practically 100% reused.
+Complete code example [here](src/test/java/examples/excel/stringToBean/ExcelTest.java).
+And the very same is also valid for File based parsing, see the example [here](src/test/java/examples/excel/fileToBean/ExcelFileTest.java).
+
+### Excel with more than one sheet
+
+But Excel files do have more sheets. How can I parse that?
+
+It's even easier. Let's have a look at the following example:
+
+```java
+@Data
+@TypeFile.NewResource
+@IOStream.FileBased
+@SpreadSheet.xlsx
+@Field.forEachAnnotatedWith(Accessor.class)
+public class ExcelTestMultiBean {
+
+  @SpreadSheet.select(sheetName = "ExcelTestBean1")
+  @Pipe.ofClass(ExcelSheetTestBean1.class)
+  @Accessor
+  private Stream<ExcelSheetTestBean1> sheet1;
+
+  @Pipe.ofClass(ExcelSheetTestBean2.class)
+  @Accessor
+  private Stream<ExcelSheetTestBean2> sheet2;
+}
+```
+This class represents the main Excel File, and contains the two streams pertaining the two sheets of the Excel file.
+
+Let's have a look at the first sheet :
+
+```java
+
+```
+
+```java
+
+```
 
 
 

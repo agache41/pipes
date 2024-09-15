@@ -1,4 +1,4 @@
-package examples.excel;
+package examples.excel.multiSheet;
 
 import io.github.agache41.annotator.annotations.Position;
 import io.github.agache41.ormpipes.pipes.accessor.Accessor;
@@ -23,8 +23,10 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@SpreadSheet.select(sheetName = "ExcelTestBean2")
 @SpreadSheet.sheet
-public class ExcelSheetTestBean1 {
+public class ExcelSheetTestBean2 {
+
     @Position(0)
     @SpreadSheet.Header(name = "string0", position = 0)
     @TypeString.cellValue
