@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ExcelTest {
-    private final String testFileName = "text.xlsx";
+    private final String testFileName = "excelMultiSheet.xlsx";
     private final File file = this.getTestFile(testFileName);
     private final ExcelTestMultiBean bean = createBean();
 

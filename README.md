@@ -447,38 +447,189 @@ public class ExcelTestMultiBean {
   private Stream<ExcelSheetTestBean2> sheet2;
 }
 ```
-This class represents the main Excel File, and contains the two streams pertaining the two sheets of the Excel file.
+Notice this class as it represents the main Excel File, and contains the two streams pertaining the two sheets of the Excel file.
 
-Let's have a look at the first sheet :
-
-```java
-
-```
+Let's have a look at the first sheet. Notice the very same data fields from the previous example.
 
 ```java
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@SpreadSheet.sheet
+public class ExcelSheetTestBean1 {
+  @Position(0)
+  @SpreadSheet.Header(name = "string0", position = 0)
+  @TypeString.cellValue
+  @TypeString.nullable
+  @Accessor
+  private String string0;
+
+  @Position(1)
+  @SpreadSheet.Header(name = "integer1", position = 1, required = true)
+  @TypeInteger.cellValue
+  @Accessor
+  private Integer integer1;
+
+  @Position(2)
+  @SpreadSheet.Header(name = "long2", position = 2)
+  @TypeLong.cellValue
+  @Accessor
+  private Long long2;
+
+  @Position(3)
+  @SpreadSheet.Header(name = "double3", position = 3, required = true)
+  @TypeDouble.cellValue
+  @Accessor
+  private Double double3;
+
+  @Position(4)
+  @SpreadSheet.Header(name = "float4", position = 4)
+  @TypeFloat.cellValue
+  @Accessor
+  private Float float4;
+
+  @Position(5)
+  @SpreadSheet.Header(name = "localdate5", position = 5)
+  @TypeLocalDate.cellValue
+  @Accessor
+  private LocalDate localdate5;
+
+  @Position(6)
+  @SpreadSheet.Header(name = "date6", position = 6)
+  @TypeDate.cellValue
+  @Accessor
+  private Date date6;
+
+  @Position(7)
+  @SpreadSheet.Header(name = "list7", position = 7)
+  @TypeString.cellValue
+  @TypeString.List(separator = ",")
+  @Accessor
+  private List<String> list7;
+
+}
 
 ```
+And the second one:
+```java
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@SpreadSheet.select(sheetName = "ExcelTestBean2")
+@SpreadSheet.sheet
+public class ExcelSheetTestBean2 {
 
+    @Position(0)
+    @SpreadSheet.Header(name = "string0", position = 0)
+    @TypeString.cellValue
+    @TypeString.nullable
+    @Accessor
+    private String string0;
+
+    @Position(1)
+    @SpreadSheet.Header(name = "integer1", position = 1, required = true)
+    @TypeInteger.cellValue
+    @Accessor
+    private Integer integer1;
+
+    @Position(2)
+    @SpreadSheet.Header(name = "long2", position = 2)
+    @TypeLong.cellValue
+    @Accessor
+    private Long long2;
+
+    @Position(3)
+    @SpreadSheet.Header(name = "double3", position = 3, required = true)
+    @TypeDouble.cellValue
+    @Accessor
+    private Double double3;
+
+    @Position(4)
+    @SpreadSheet.Header(name = "float4", position = 4)
+    @TypeFloat.cellValue
+    @Accessor
+    private Float float4;
+
+    @Position(5)
+    @SpreadSheet.Header(name = "localdate5", position = 5)
+    @TypeLocalDate.cellValue
+    @Accessor
+    private LocalDate localdate5;
+
+    @Position(6)
+    @SpreadSheet.Header(name = "date6", position = 6)
+    @TypeDate.cellValue
+    @Accessor
+    private Date date6;
+
+    @Position(7)
+    @SpreadSheet.Header(name = "list7", position = 7)
+    @TypeString.cellValue
+    @TypeString.List(separator = ",")
+    @Accessor
+    private List<String> list7;
+
+}
+```
+Now let's parse it:
+```java
+private final String testFileName = "excelMultiSheet.xlsx";
+private final File file = this.getTestFile(testFileName);
+private final ExcelTestMultiBean bean = createBean();
+
+@Test
+void test() throws Throwable {
+
+  //given
+  StringToBeanParser<ExcelTestMultiBean> parser = new StringToBeanParser<>(ExcelTestMultiBean.class);
+
+  this.file.delete();
+  assertFalse(this.file.exists());
+
+  //when
+  parser.write(this.testFileName, this.bean);
+
+  //then
+  assertTrue(this.file.exists());
+
+  ExcelTestMultiBean readout = parser.read(this.testFileName);
+
+  assertNotNull(readout);
+
+  final ExcelTestMultiBean expected = createBean();
+
+  assertThat(expected.getSheet1()
+                     .collect(Collectors.toList())).hasSameElementsAs(readout.getSheet1()
+                                                                             .collect(Collectors.toList()));
+
+  assertThat(expected.getSheet2()
+                     .collect(Collectors.toList())).hasSameElementsAs(readout.getSheet2()
+                                                                             .collect(Collectors.toList()));
+
+}
+```
+Complete code example [here](src/test/java/examples/excel/multiSheet/ExcelTest.java).
 
 
 ## Demo
 
-А comprehensive example of using the library with JPA database you can find in the *
-*[demo](https://github.com/agache41/modell_quarkus)** module.
+А comprehensive example of using the library find in the **[examples](src/test/java/examples)** package.
 
 ## Requirements
 
-The library works with Java 11+, Quarkus 3.4.3+, JPA 2+
+The library works with Java 11+ and can be used in any container like Quarkus or Spring.
 
 ## Installation
 
-Simply add  `io.github.agache41:generic-rest-jpa.version` dependency to your project.
+Simply add  `io.github.agache41:functional.annotations` dependency to your project.
 
 The current version today at sunset:
 
 ```xml
 
-<generic-rest-jpa.version>0.2.7</generic-rest-jpa.version>
+<functional.annotations.version>0.1.1</functional.annotations.version>
 ```
 
 The dependency for the main jar:
@@ -487,31 +638,15 @@ The dependency for the main jar:
 
 <dependency>
     <groupId>io.github.agache41</groupId>
-    <artifactId>generic-rest-jpa</artifactId>
-    <version>${generic-rest-jpa.version}</version>
-</dependency>
-```
-
-For the test context the tests-classified jar is needed:
-
-```xml
-
-<dependency>
-    <groupId>io.github.agache41</groupId>
-    <artifactId>generic-rest-jpa</artifactId>
-    <version>${generic-rest-jpa.version}</version>
-    <classifier>tests</classifier>
-    <type>test-jar</type>
-    <scope>test</scope>
+    <artifactId>functional.annotations</artifactId>
+    <version>${functional.annotations.version}</version>
 </dependency>
 ```
 
 ## Features
 
 - Easy to install, use and extend.
-- Test coverage provided on the fly.
-- Works with both [Jackson](https://github.com/FasterXML/jackson) and [JSONB](https://javaee.github.io/jsonb-spec/). No
-  support yet for reactive mode.
+- Provided examples in the test Folder
 - Tested with Quarkus 3.6.7.
 
 ## Structure
@@ -520,79 +655,92 @@ The library is packaged as a single jar. An auxiliary test classifier jar is pro
 
 ## Dependencies
 
-Execution dependencies consist in the needed packages from [Jakarta](https://jakarta.ee/)
-and [JbossLogging](https://github.com/jboss-logging/jboss-logging) and are not transitive.
+Execution dependencies consist in the needed packages for implementing the annotations functionality. 
+The [JbossLogging](https://github.com/jboss-logging/jboss-logging) dependency ist not transitive and must be provided at runtime, that is if logging is to be used.
 
 ```xml
-
 <dependencies>
-    <dependency>
-        <groupId>jakarta.enterprise</groupId>
-        <artifactId>jakarta.enterprise.cdi-api</artifactId>
-        <version>4.0.1</version>
-        <scope>provided</scope>
-    </dependency>
-    <dependency>
-        <groupId>jakarta.persistence</groupId>
-        <artifactId>jakarta.persistence-api</artifactId>
-        <version>3.1.0</version>
-        <scope>provided</scope>
-    </dependency>
-    <dependency>
-        <groupId>jakarta.ws.rs</groupId>
-        <artifactId>jakarta.ws.rs-api</artifactId>
-        <version>3.1.0</version>
-        <scope>provided</scope>
-    </dependency>
-    <dependency>
-        <groupId>jakarta.validation</groupId>
-        <artifactId>jakarta.validation-api</artifactId>
-        <version>3.0.2</version>
-        <scope>provided</scope>
-    </dependency>
-    <dependency>
-        <groupId>org.jboss.logging</groupId>
-        <artifactId>jboss-logging</artifactId>
-        <version>3.5.3.Final</version>
-        <scope>provided</scope>
-    </dependency>
+  <dependency>
+    <groupId>io.github.agache41</groupId>
+    <artifactId>annotator</artifactId>
+    <version>0.1.0</version>
+  </dependency>
+  <dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-lang3</artifactId>
+    <version>3.12.0</version>
+  </dependency>
+  <dependency>
+    <groupId>commons-io</groupId>
+    <artifactId>commons-io</artifactId>
+    <version>2.16.1</version>
+  </dependency>
+  <dependency>
+    <groupId>com.ibm.icu</groupId>
+    <artifactId>icu4j</artifactId>
+    <version>72.1</version>
+  </dependency>
+  <dependency>
+    <groupId>org.codehaus.guessencoding</groupId>
+    <artifactId>guessencoding</artifactId>
+    <version>1.4</version>
+  </dependency>
+  <dependency>
+    <groupId>org.apache.poi</groupId>
+    <artifactId>poi</artifactId>
+    <version>5.3.0</version>
+  </dependency>
+  <dependency>
+    <groupId>org.apache.poi</groupId>
+    <artifactId>poi-ooxml</artifactId>
+    <version>5.3.0</version>
+  </dependency>
+  <dependency>
+    <groupId>org.jboss.logging</groupId>
+    <artifactId>jboss-logging</artifactId>
+    <version>3.5.3.Final</version>
+    <scope>provided</scope>
+  </dependency>
 </dependencies>
 ```
-
 Testing dependencies are listed here. Please note the Lombok is used only in the test context.
-
 ```xml
-
 <dependencies>
-    <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-engine</artifactId>
-        <version>5.10.1</version>
-        <scope>test</scope>
-    </dependency>
-    <dependency>
-        <groupId>io.rest-assured</groupId>
-        <artifactId>rest-assured</artifactId>
-        <version>5.4.0</version>
-        <scope>test</scope>
-    </dependency>
-    <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-        <version>1.18.30</version>
-        <scope>test</scope>
-    </dependency>
-    <dependency>
-        <groupId>org.hibernate.orm</groupId>
-        <artifactId>hibernate-core</artifactId>
-        <version>6.4.1.Final</version>
-        <scope>test</scope>
-    </dependency>
-    <dependency>
-        <groupId>com.h2database</groupId>
-        <artifactId>h2</artifactId>
-        <version>2.2.224</version>
-        <scope>test</scope>
-    </dependency>
+  <dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter</artifactId>
+    <version>5.9.2</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-collections4</artifactId>
+    <version>4.4</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <version>1.18.26</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-api</artifactId>
+    <version>2.22.1</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-core</artifactId>
+    <version>2.22.1</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.assertj</groupId>
+    <artifactId>assertj-core</artifactId>
+    <version>3.25.3</version>
+    <scope>test</scope>
+  </dependency>
 </dependencies>
 ```
