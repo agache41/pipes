@@ -35,7 +35,6 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-@TypeFile.NewResource
 @IOStream.FileBased
 @SpreadSheet.xlsx
 @SpreadSheet.select(sheetName = "ExcelBean")
