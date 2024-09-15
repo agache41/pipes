@@ -16,6 +16,7 @@
 
 package io.github.agache41.ormpipes.pipes.baseTest;
 
+import io.github.agache41.ormpipes.pipes.base.parser.StringToStreamOfBeansParser;
 import io.github.agache41.ormpipes.pipes.baseTest.values.AbstractValuesFeeder;
 import io.github.agache41.ormpipes.pipes.baseTest.values.TestBean;
 import io.github.agache41.ormpipes.pipes.baseTest.values.Values;
@@ -37,7 +38,7 @@ import java.util.stream.Collectors;
 @Execution(ExecutionMode.CONCURRENT)
 public abstract class AbstractBaseStreamTest<T extends TestBean> extends AbstractValuesFeeder<T> implements Supplier<T>, Values<T> {
 
-    protected CSVFile.StringStreamParser<T> parser;
+    protected StringToStreamOfBeansParser<T> parser;
 
     protected List<T> values;
     protected List<T> lessValues;
@@ -55,7 +56,7 @@ public abstract class AbstractBaseStreamTest<T extends TestBean> extends Abstrac
             throw new RuntimeException(e);
         }
 
-        this.parser = new CSVFile.StringStreamParser<T>(clazz);
+        this.parser = new StringToStreamOfBeansParser<>(clazz);
         this.testFileName = this.getTestFileName("");
         this.file = this.getTestFile(this.testFileName);
         this.values = super.getValues();

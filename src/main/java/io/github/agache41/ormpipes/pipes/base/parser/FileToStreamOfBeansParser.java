@@ -38,7 +38,7 @@ public class FileToStreamOfBeansParser<T> extends Parser<T, File, Stream<T>> {
      * @param clazz the clazz
      */
     public FileToStreamOfBeansParser(Class<T> clazz) {
-        super(clazz, File.class);
+        super(clazz);
     }
 
     /**
@@ -51,6 +51,6 @@ public class FileToStreamOfBeansParser<T> extends Parser<T, File, Stream<T>> {
      */
     public FileToStreamOfBeansParser(Class<T> clazz,
                                      String view) {
-        super(clazz, File.class, view);
+        super(clazz, view);
     }
 }

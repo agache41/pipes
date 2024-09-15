@@ -16,9 +16,9 @@
 
 package io.github.agache41.ormpipes.pipes.spreadSheet.file;
 
+import io.github.agache41.ormpipes.pipes.base.parser.FileToStreamOfBeansParser;
 import io.github.agache41.ormpipes.pipes.baseTest.ReadWriteTest;
 import io.github.agache41.ormpipes.pipes.spreadSheet.SpreadSheet;
-import io.github.agache41.ormpipes.pipes.spreadSheet.SpreadSheet.file.FileStreamParser;
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Order;
@@ -37,7 +37,7 @@ import java.util.stream.Stream;
 
 
 class ExcelTest extends ReadWriteTest<ExcelTemplateBean> {
-    private final FileStreamParser<ExcelFileAppendBean> templateParser = FileStreamParser.ofClass(ExcelFileAppendBean.class, "append");
+    private final FileToStreamOfBeansParser<ExcelFileAppendBean> templateParser = new FileToStreamOfBeansParser<>(ExcelFileAppendBean.class, "append");
 
     public ExcelTest() {
         super.init(ExcelTemplateBean.class, SpreadSheet.xls.extension);

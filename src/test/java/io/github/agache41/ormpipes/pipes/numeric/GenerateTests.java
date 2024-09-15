@@ -18,28 +18,23 @@ package io.github.agache41.ormpipes.pipes.numeric;
 
 import io.github.agache41.ormpipes.pipe.AnnotablePipe;
 import io.github.agache41.ormpipes.pipe.registry.Registry;
+import io.github.agache41.ormpipes.pipes.base.parser.StringToStreamOfBeansParser;
 import io.github.agache41.ormpipes.pipes.csv.csvFile.CSVFile;
-
 import io.github.agache41.ormpipes.pipes.numeric.typeBigDecimal.BigDecimalFormatTest;
 import io.github.agache41.ormpipes.pipes.numeric.typeBigInteger.BigIntegerFormatTest;
 import io.github.agache41.ormpipes.pipes.numeric.typeBoolean.BooleanFormatTest;
 import io.github.agache41.ormpipes.pipes.numeric.typeDouble.DoubleFormatTest;
-
 import io.github.agache41.ormpipes.pipes.numeric.typeFloat.FloatFormatTest;
 import io.github.agache41.ormpipes.pipes.numeric.typeInteger.IntegerFormatTest;
-
 import io.github.agache41.ormpipes.pipes.numeric.typeLong.LongFormatTest;
 import io.github.agache41.ormpipes.pipes.numeric.typeShort.ShortFormatTest;
-
 import io.github.agache41.ormpipes.pipes.temporal.typeDate.DateFormatTest;
 import io.github.agache41.ormpipes.pipes.temporal.typeLocalDate.LocalDateFormatTest;
 import io.github.agache41.ormpipes.pipes.temporal.typeLocalDateTime.LocalDateTimeFormatTest;
-
 import io.github.agache41.ormpipes.pipes.temporal.typeLocalTime.LocalTimeFormatTest;
 import io.github.agache41.ormpipes.pipes.temporal.typeSqlDate.SqlDateFormatTest;
 import io.github.agache41.ormpipes.pipes.temporal.typeTimestamp.TimestampFormatTest;
 import io.github.agache41.ormpipes.pipes.zip.zipArchive.Zip;
-
 import io.github.agache41.ormpipes.vminfo.GenericVMInfo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
@@ -175,10 +170,10 @@ public class GenerateTests extends BaseFormatTest {
     @Execution(ExecutionMode.CONCURRENT)
     void generateLocalDateTimeFormatCsvTestFiles() throws Throwable {
         this.generateNumericCsvTestFile(LocalDateTimeFormatTest.LocalDateTimeFormatAnnotation::new, LocalDateTimeFormatTest.class, "", dateTimeFormats, GenericVMInfo.LANGUAGE_TAGS,
-                timeZones,
-                TRUE_AND_FALSE, TRUE_AND_FALSE, TRUE_AND_FALSE, dateTimeValues);
+                                        timeZones,
+                                        TRUE_AND_FALSE, TRUE_AND_FALSE, TRUE_AND_FALSE, dateTimeValues);
         this.generateNumericCsvTestFile(LocalDateTimeFormatTest.LocalDateTimeFormatAnnotation::new, LocalDateTimeFormatTest.class, "Small", dateTimeFormats, GenericVMInfo.LANGUAGE_TAGS_SMALL,
-                timeZones, TRUE_AND_FALSE, TRUE_AND_FALSE, TRUE_AND_FALSE, dateTimeValues);
+                                        timeZones, TRUE_AND_FALSE, TRUE_AND_FALSE, TRUE_AND_FALSE, dateTimeValues);
     }
 
     @Test
@@ -187,39 +182,56 @@ public class GenerateTests extends BaseFormatTest {
         this.generateNumericCsvTestFile(LocalTimeFormatTest.LocalTimeFormatAnnotation::new, LocalTimeFormatTest.class, "", timeFormats, GenericVMInfo.LANGUAGE_TAGS, timeZones,
                                         TRUE_AND_FALSE, TRUE_AND_FALSE, TRUE_AND_FALSE, timeValues);
         this.generateNumericCsvTestFile(LocalTimeFormatTest.LocalTimeFormatAnnotation::new, LocalTimeFormatTest.class, "Small", timeFormats, GenericVMInfo.LANGUAGE_TAGS_SMALL,
-                timeZones, TRUE_AND_FALSE, TRUE_AND_FALSE, TRUE_AND_FALSE, timeValues);
+                                        timeZones, TRUE_AND_FALSE, TRUE_AND_FALSE, TRUE_AND_FALSE, timeValues);
     }
 
     @Test
     @Execution(ExecutionMode.CONCURRENT)
     void generateTimestampFormatCsvTestFiles() throws Throwable {
         this.generateNumericCsvTestFile(TimestampFormatTest.TimestampFormatAnnotation::new, TimestampFormatTest.class, "", dateTimeFormats, GenericVMInfo.LANGUAGE_TAGS, timeZones,
-                TRUE_AND_FALSE, TRUE_AND_FALSE, TRUE_AND_FALSE, dateTimeValues);
+                                        TRUE_AND_FALSE, TRUE_AND_FALSE, TRUE_AND_FALSE, dateTimeValues);
         this.generateNumericCsvTestFile(TimestampFormatTest.TimestampFormatAnnotation::new, TimestampFormatTest.class, "Small", dateTimeFormats, GenericVMInfo.LANGUAGE_TAGS_SMALL,
-                timeZones, TRUE_AND_FALSE, TRUE_AND_FALSE, TRUE_AND_FALSE, dateTimeValues);
+                                        timeZones, TRUE_AND_FALSE, TRUE_AND_FALSE, TRUE_AND_FALSE, dateTimeValues);
     }
 
     @Test
     @Execution(ExecutionMode.CONCURRENT)
     void generateSqlDateFormatCsvTestFiles() throws Throwable {
         this.generateNumericCsvTestFile(SqlDateFormatTest.SqlDateFormatAnnotation::new, SqlDateFormatTest.class, "", dateFormats, GenericVMInfo.LANGUAGE_TAGS, timeZones, TRUE_AND_FALSE,
-                TRUE_AND_FALSE, TRUE_AND_FALSE, dateValues);
+                                        TRUE_AND_FALSE, TRUE_AND_FALSE, dateValues);
         this.generateNumericCsvTestFile(SqlDateFormatTest.SqlDateFormatAnnotation::new, SqlDateFormatTest.class, "Small", dateFormats, GenericVMInfo.LANGUAGE_TAGS_SMALL, timeZones,
-                TRUE_AND_FALSE, TRUE_AND_FALSE, TRUE_AND_FALSE, dateValues);
+                                        TRUE_AND_FALSE, TRUE_AND_FALSE, TRUE_AND_FALSE, dateValues);
     }
 
 
     ////////////////////////////////////////////////////////////////////////////////////
     // Numeric
-    protected void generateNumericCsvTestFile(Supplier<BaseNumericTestConfigFor<?>> constructor, Class<?> testClass, String fileSuffix, String[] values, String[] languageTags, String[] zoneIds, Boolean[] nullSafes, Boolean[] blankSafes, Boolean[] noExceptions, String... testValues) throws Throwable {
+    protected void generateNumericCsvTestFile(Supplier<BaseNumericTestConfigFor<?>> constructor,
+                                              Class<?> testClass,
+                                              String fileSuffix,
+                                              String[] values,
+                                              String[] languageTags,
+                                              String[] zoneIds,
+                                              Boolean[] nullSafes,
+                                              Boolean[] blankSafes,
+                                              Boolean[] noExceptions,
+                                              String... testValues) throws Throwable {
 
-        CSVFile.StringStreamParser.ofClass(BaseNumericTestConfigFor.class, fileSuffix.isEmpty() ? "zip" : DEFAULT)
-                                  .write(this.testFileName(testClass, fileSuffix),//
-                                          this.generateNumericTests(constructor, fileSuffix, values, languageTags, zoneIds, nullSafes, blankSafes, noExceptions, testValues));
+        new StringToStreamOfBeansParser<>(BaseNumericTestConfigFor.class, fileSuffix.isEmpty() ? "zip" : DEFAULT)
+                .write(this.testFileName(testClass, fileSuffix),//
+                       this.generateNumericTests(constructor, fileSuffix, values, languageTags, zoneIds, nullSafes, blankSafes, noExceptions, testValues));
     }
 
 
-    private Stream<BaseNumericTestConfigFor> generateNumericTests(Supplier<BaseNumericTestConfigFor<?>> constructor, String fileSuffix, String[] values, String[] languageTags, String[] zoneIds, Boolean[] nullSafes, Boolean[] blankSafes, Boolean[] noExceptions, String... testValues) {
+    private Stream<BaseNumericTestConfigFor> generateNumericTests(Supplier<BaseNumericTestConfigFor<?>> constructor,
+                                                                  String fileSuffix,
+                                                                  String[] values,
+                                                                  String[] languageTags,
+                                                                  String[] zoneIds,
+                                                                  Boolean[] nullSafes,
+                                                                  Boolean[] blankSafes,
+                                                                  Boolean[] noExceptions,
+                                                                  String... testValues) {
         List<BaseNumericTestConfigFor> data = new LinkedList<>();
         for (String testValue : testValues) {
             //generate for the simple case
@@ -240,7 +252,15 @@ public class GenerateTests extends BaseFormatTest {
         return data.stream();
     }
 
-    private BaseNumericTestConfigFor<?> generateNumericTest(Supplier<BaseNumericTestConfigFor<?>> constructor, String testValue, String value, String languageTag, String zoneId, Boolean simple, Boolean nullSafe, Boolean blankSafe, Boolean noException) {
+    private BaseNumericTestConfigFor<?> generateNumericTest(Supplier<BaseNumericTestConfigFor<?>> constructor,
+                                                            String testValue,
+                                                            String value,
+                                                            String languageTag,
+                                                            String zoneId,
+                                                            Boolean simple,
+                                                            Boolean nullSafe,
+                                                            Boolean blankSafe,
+                                                            Boolean noException) {
         BaseNumericTestConfigFor configAnnotation = constructor.get();
         configAnnotation.setFormat(value);
         configAnnotation.setLanguageTag(languageTag);
@@ -249,16 +269,34 @@ public class GenerateTests extends BaseFormatTest {
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////
+
     /// Boolean
 
-    protected void generateBooleanCsvTestFile(Supplier<BooleanFormatTest.BooleanFormatAnnotation> constructor, Class<?> testClass, String fileSuffix, String[][] values, String[][] falseValues, Boolean[] nullOrUnknownIsFalses, Boolean[] nullSafes, Boolean[] blankSafes, Boolean[] noExceptions, String... testValues) throws Throwable {
+    protected void generateBooleanCsvTestFile(Supplier<BooleanFormatTest.BooleanFormatAnnotation> constructor,
+                                              Class<?> testClass,
+                                              String fileSuffix,
+                                              String[][] values,
+                                              String[][] falseValues,
+                                              Boolean[] nullOrUnknownIsFalses,
+                                              Boolean[] nullSafes,
+                                              Boolean[] blankSafes,
+                                              Boolean[] noExceptions,
+                                              String... testValues) throws Throwable {
 
-        CSVFile.StringStreamParser.ofClass(BooleanFormatTest.BooleanFormatAnnotation.class, fileSuffix.isEmpty() ? "zip" : DEFAULT)
+        new StringToStreamOfBeansParser<>(BooleanFormatTest.BooleanFormatAnnotation.class, fileSuffix.isEmpty() ? "zip" : DEFAULT)
                                   .write(this.testFileName(testClass, fileSuffix),//
-                                          this.generateBooleansTests(constructor, fileSuffix, values, falseValues, nullOrUnknownIsFalses, nullSafes, blankSafes, noExceptions, testValues));
+                                         this.generateBooleansTests(constructor, fileSuffix, values, falseValues, nullOrUnknownIsFalses, nullSafes, blankSafes, noExceptions, testValues));
     }
 
-    private Stream<BooleanFormatTest.BooleanFormatAnnotation> generateBooleansTests(Supplier<BooleanFormatTest.BooleanFormatAnnotation> constructor, String fileSuffix, String[][] values, String[][] falseValues, Boolean[] nullOrUnknownIsFalses, Boolean[] nullSafes, Boolean[] blankSafes, Boolean[] noExceptions, String... testValues) {
+    private Stream<BooleanFormatTest.BooleanFormatAnnotation> generateBooleansTests(Supplier<BooleanFormatTest.BooleanFormatAnnotation> constructor,
+                                                                                    String fileSuffix,
+                                                                                    String[][] values,
+                                                                                    String[][] falseValues,
+                                                                                    Boolean[] nullOrUnknownIsFalses,
+                                                                                    Boolean[] nullSafes,
+                                                                                    Boolean[] blankSafes,
+                                                                                    Boolean[] noExceptions,
+                                                                                    String... testValues) {
         List<BooleanFormatTest.BooleanFormatAnnotation> data = new LinkedList<>();
         for (String testValue : testValues) {
             //generate for the simple case
@@ -278,7 +316,15 @@ public class GenerateTests extends BaseFormatTest {
         return data.stream();
     }
 
-    private BooleanFormatTest.BooleanFormatAnnotation generateBooleanTest(Supplier<BooleanFormatTest.BooleanFormatAnnotation> constructor, String testValue, Boolean simple, Boolean nullSafe, Boolean blankSafe, Boolean noException, String[] values, String[] falseValues, Boolean nullOrUnknownIsFalse) {
+    private BooleanFormatTest.BooleanFormatAnnotation generateBooleanTest(Supplier<BooleanFormatTest.BooleanFormatAnnotation> constructor,
+                                                                          String testValue,
+                                                                          Boolean simple,
+                                                                          Boolean nullSafe,
+                                                                          Boolean blankSafe,
+                                                                          Boolean noException,
+                                                                          String[] values,
+                                                                          String[] falseValues,
+                                                                          Boolean nullOrUnknownIsFalse) {
         BooleanFormatTest.BooleanFormatAnnotation configAnnotation = constructor.get();
         configAnnotation.setValues(values);
         configAnnotation.setFalseValues(falseValues);
@@ -287,8 +333,14 @@ public class GenerateTests extends BaseFormatTest {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     /// Generic test generation
-    private <T extends BaseTestConfigFor<T>> T generateTest(T configAnnotation, String testValue, Boolean simple, Boolean nullSafe, Boolean blankSafe, Boolean noException) {
+    private <T extends BaseTestConfigFor<T>> T generateTest(T configAnnotation,
+                                                            String testValue,
+                                                            Boolean simple,
+                                                            Boolean nullSafe,
+                                                            Boolean blankSafe,
+                                                            Boolean noException) {
         configAnnotation.setInput(testValue);
         configAnnotation.setSimple(simple);
         configAnnotation.setNullSafe(nullSafe);
@@ -312,7 +364,8 @@ public class GenerateTests extends BaseFormatTest {
         return configAnnotation;
     }
 
-    private String testFileName(Class<?> testClass, String suffix) {
+    private String testFileName(Class<?> testClass,
+                                String suffix) {
 
         String testFileName = "../../src/test/java/" + testClass.getCanonicalName()
                                                                 .replace('.', '/') + suffix + (suffix.isEmpty() ? Zip.Archive.extension : CSVFile.extension);

@@ -18,6 +18,7 @@ package io.github.agache41.ormpipes.pipes.numeric;
 
 import io.github.agache41.ormpipes.pipe.AnnotablePipe;
 import io.github.agache41.ormpipes.pipe.registry.Registry;
+import io.github.agache41.ormpipes.pipes.base.parser.StringToStreamOfBeansParser;
 import io.github.agache41.ormpipes.pipes.csv.csvFile.CSVFile;
 import io.github.agache41.ormpipes.pipes.typeFile.FilePipes;
 import io.github.agache41.ormpipes.pipes.zip.zipArchive.Zip;
@@ -41,7 +42,7 @@ public abstract class BaseFormatTest {
     protected void doRegressionTest(Class<? extends BaseTestConfigFor> configClass) throws Throwable {
         logger.infof("Starting big Csv Test on " + configClass.getSimpleName());
         String fileSuffix = "";
-        CSVFile.StringStreamParser.ofClass(configClass, fileSuffix.isEmpty() ? "zip" : DEFAULT)
+        new StringToStreamOfBeansParser<>(configClass, fileSuffix.isEmpty() ? "zip" : DEFAULT)
                                   .read(this.testFileName(fileSuffix))
                                   .forEach(this::doTest);
     }

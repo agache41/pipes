@@ -16,11 +16,13 @@
 
 package examples.csv.iostreamToBeans;
 
-import io.github.agache41.ormpipes.pipes.base.parser.StringToStreamOfBeansParser;
+import io.github.agache41.ormpipes.pipes.base.parser.IOStreamToStreamOfBeansParser;
 import io.github.agache41.ormpipes.pipes.typeFile.FilePipes;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -33,28 +35,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CSVTest {
+public class CSVIOStreamTest {
     private final String testFileName = "csvFile.csv";
     private final File file = this.getTestFile(testFileName);
-    private final List<CSVBean> beans = createBeans();
+    private final List<CSVIOStreamBean> beans = createBeans();
 
     @Test
     void stringToStreamOfBeansTest() throws Throwable {
 
         //given
-        StringToStreamOfBeansParser<CSVBean> parser = new StringToStreamOfBeansParser<>(CSVBean.class);
+        IOStreamToStreamOfBeansParser<CSVIOStreamBean> parser = new IOStreamToStreamOfBeansParser<>(CSVIOStreamBean.class);
 
         this.file.delete();
         assertFalse(this.file.exists());
 
         //when
-        parser.write(this.testFileName, this.beans.stream());
+        parser.write(new FileOutputStream(this.file), this.beans.stream());
 
         //then
         assertTrue(this.file.exists());
 
-        LinkedList<CSVBean> readout = parser.read(this.testFileName)
-                                            .collect(Collectors.toCollection(LinkedList::new));
+        LinkedList<CSVIOStreamBean> readout = parser.read(new FileInputStream(this.file))
+                                                    .collect(Collectors.toCollection(LinkedList::new));
         assertThat(this.beans).hasSameElementsAs(readout);
     }
 
@@ -62,9 +64,9 @@ public class CSVTest {
         return new File(FilePipes.resourceDirectory, testFileName);
     }
 
-    public List<CSVBean> createBeans() {
-        final CSVBean nuller = new CSVBean();
-        final CSVBean minValue = new CSVBean();
+    public List<CSVIOStreamBean> createBeans() {
+        final CSVIOStreamBean nuller = new CSVIOStreamBean();
+        final CSVIOStreamBean minValue = new CSVIOStreamBean();
         minValue.setString0("");
         minValue.setInteger1(Integer.MIN_VALUE);
         minValue.setLong2(Long.MIN_VALUE);
@@ -74,7 +76,7 @@ public class CSVTest {
         minValue.setDate6(Date.valueOf(LocalDate.of(1900, 1, 1)));
         minValue.setList7(Arrays.asList("1", "2", "3"));
 
-        final CSVBean value = new CSVBean();
+        final CSVIOStreamBean value = new CSVIOStreamBean();
         value.setString0("string0");
         value.setInteger1(1);
         value.setLong2(2L);

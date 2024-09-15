@@ -16,6 +16,7 @@
 
 package io.github.agache41.ormpipes.pipes.csv.parser;
 
+import io.github.agache41.ormpipes.pipes.base.parser.StringToStreamOfBeansParser;
 import io.github.agache41.ormpipes.pipes.csv.csvFile.CSVFile;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -64,14 +65,14 @@ class CSVParserTest {
                            .column3(4)
                            .build());
 
-        CSVFile.StringStreamParser.ofClass(CSVTestBean.class)
-                                  .write("temporary/CSVTestFile.csv.zip", data.stream());
+        new StringToStreamOfBeansParser<>(CSVTestBean.class)
+                .write("temporary/CSVTestFile.csv.zip", data.stream());
     }
 
     @Test
     @Order(1)
     void testRead() throws Throwable {
-        CSVFile.StringStreamParser.ofClass(CSVTestBean.class)
+        new StringToStreamOfBeansParser<>(CSVTestBean.class)
                                   .read("temporary/CSVTestFile.csv.zip")
                                   .forEach(System.out::println);
     }
@@ -101,10 +102,10 @@ class CSVParserTest {
                            .column3(4)
                            .build());
 
-        CSVFile.StringStreamParser.ofClass(CSVTestBean.class)
+        new StringToStreamOfBeansParser<>(CSVTestBean.class)
                                   .write("temporary/CSVTestFile.csv", data.stream());
 
-        List<CSVTestBean> readList = CSVFile.StringStreamParser.ofClass(CSVTestBean.class)
+        List<CSVTestBean> readList = new StringToStreamOfBeansParser<>(CSVTestBean.class)
                                                                .read("temporary/CSVTestFile.csv")
                                                                .collect(Collectors.toList());
         Assertions.assertEquals(data,

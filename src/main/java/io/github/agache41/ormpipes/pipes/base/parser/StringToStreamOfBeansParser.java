@@ -36,7 +36,7 @@ public class StringToStreamOfBeansParser<T> extends Parser<T, String, Stream<T>>
      * @param clazz the clazz
      */
     public StringToStreamOfBeansParser(Class<T> clazz) {
-        super(clazz, String.class);
+        super(clazz);
     }
 
     /**
@@ -49,6 +49,6 @@ public class StringToStreamOfBeansParser<T> extends Parser<T, String, Stream<T>>
      */
     public StringToStreamOfBeansParser(Class<T> clazz,
                                        String view) {
-        super(clazz, String.class, view);
+        super(clazz, view);
     }
 }

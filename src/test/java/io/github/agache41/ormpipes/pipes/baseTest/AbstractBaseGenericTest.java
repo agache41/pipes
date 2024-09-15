@@ -63,7 +63,7 @@ public abstract class AbstractBaseGenericTest<T extends TestBean, Output> extend
             throw new RuntimeException(e);
         }
 
-        this.parser = new Parser<T, String, Output>(clazz, String.class, view);
+        this.parser = new Parser<>(clazz, view);
         this.testFileName = this.getTestFileName("");
         this.file = this.getTestFile(this.testFileName);
         this.values = super.getValues();

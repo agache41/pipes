@@ -37,7 +37,7 @@ public class FileToBeanParser<T> extends Parser<T, File, T> {
      * @param clazz the clazz
      */
     public FileToBeanParser(Class<T> clazz) {
-        super(clazz, File.class);
+        super(clazz);
     }
 
     /**
@@ -50,6 +50,6 @@ public class FileToBeanParser<T> extends Parser<T, File, T> {
      */
     public FileToBeanParser(Class<T> clazz,
                             String view) {
-        super(clazz, File.class, view);
+        super(clazz, view);
     }
 }

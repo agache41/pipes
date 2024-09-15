@@ -23,14 +23,12 @@ import io.github.agache41.ormpipes.pipes.base.othogonal.enums.PositionMethod;
 import io.github.agache41.ormpipes.pipes.csv.csvField.CSVAccessor;
 import io.github.agache41.ormpipes.pipes.csv.csvFile.CSVFile;
 import io.github.agache41.ormpipes.pipes.encoding.IOEncoding;
-import io.github.agache41.ormpipes.pipes.iostream.IOStream;
 import io.github.agache41.ormpipes.pipes.numeric.typeDouble.TypeDouble;
 import io.github.agache41.ormpipes.pipes.numeric.typeFloat.TypeFloat;
 import io.github.agache41.ormpipes.pipes.numeric.typeInteger.TypeInteger;
 import io.github.agache41.ormpipes.pipes.numeric.typeLong.TypeLong;
 import io.github.agache41.ormpipes.pipes.temporal.typeDate.TypeDate;
 import io.github.agache41.ormpipes.pipes.temporal.typeLocalDate.TypeLocalDate;
-import io.github.agache41.ormpipes.pipes.typeFile.TypeFile;
 import io.github.agache41.ormpipes.pipes.typeString.TypeString;
 import lombok.Data;
 
@@ -39,13 +37,11 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-@TypeFile.NewResource
-@IOStream.FileBased
 @IOEncoding.Automatic
 @TypeString.IOStreamLines(separator = TypeString.IOStreamLines.CR)
 @TypeString.Array(separator = ";")
 @CSVFile(namingMethod = NamingMethod.JavaFieldNames, positionMethod = PositionMethod.Fields, model = Model.Fixed)
-public class CSVBean {
+public class CSVIOStreamBean {
     @Position(0)
     @TypeString.nullable
     @CSVAccessor(name = "string0", position = 0)

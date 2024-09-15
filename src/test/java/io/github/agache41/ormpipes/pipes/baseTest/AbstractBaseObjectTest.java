@@ -16,6 +16,7 @@
 
 package io.github.agache41.ormpipes.pipes.baseTest;
 
+import io.github.agache41.ormpipes.pipes.base.parser.StringToBeanParser;
 import io.github.agache41.ormpipes.pipes.csv.csvFile.CSVFile;
 import io.github.agache41.ormpipes.pipes.typeFile.FilePipes;
 import org.junit.jupiter.api.Assertions;
@@ -31,7 +32,7 @@ import java.io.File;
 public abstract class AbstractBaseObjectTest<T> {
 
 
-    protected CSVFile.StringObjectParser<T> parser;
+    protected StringToBeanParser<T> parser;
     protected String testFileName;
     protected File file;
     private String extension;
@@ -39,7 +40,7 @@ public abstract class AbstractBaseObjectTest<T> {
     protected void init(Class<T> clazz, String extension) {
 
         this.extension = extension;
-        this.parser = new CSVFile.StringObjectParser<>(clazz);
+        this.parser = new StringToBeanParser<>(clazz);
         this.testFileName = this.getTestFileName("");
         this.file = this.getTestFile(this.testFileName);
     }
