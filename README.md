@@ -629,7 +629,7 @@ The current version today at sunset:
 
 ```xml
 
-<functional.annotations.version>0.1.1</functional.annotations.version>
+<functional.annotations.version>0.1.2</functional.annotations.version>
 ```
 
 The dependency for the main jar:

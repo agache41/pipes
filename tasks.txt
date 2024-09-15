@@ -1,9 +1,3 @@
-Tasks
-- clarify Test Strategy
-- fix Tests (excels)
-- clarify disable Line validation
-- clarify required Columns must throw
-- add more use cases
-- add fsv
-Backlog
-- adaugare test append la CSV
+TODO:
+- add injection point constructor
+-
