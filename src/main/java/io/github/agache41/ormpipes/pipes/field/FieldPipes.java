@@ -28,6 +28,7 @@ import io.github.agache41.ormpipes.pipe.registry.PipeRegistry;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -97,6 +98,7 @@ public class FieldPipes {
             this.annotatedWith = cfg.value();
             this.readPipes = Annotator.of(this.onClass)
                                       .getAccessorsThat(HaveAnnotation.ofType(this.annotatedWith))
+                                      .sorted(Comparator.comparing(Accessor::getPosition))
                                       .map(accessor -> {
                                           final AnnotablePipe<?, Object, ThrowingConsumer<Object>> readPipe = PipeRegistry.buildPipeFrom(accessor, this.view, "read", false);
                                           return readPipe;
@@ -178,6 +180,7 @@ public class FieldPipes {
             this.annotatedWith = cfg.value();
             this.writePipes = Annotator.of(this.onClass)
                                        .getAccessorsThat(HaveAnnotation.ofType(this.annotatedWith))
+                                       .sorted(Comparator.comparing(Accessor::getPosition))
                                        .map(accessor -> {
                                            final AnnotablePipe<?, Object, ThrowingConsumer<Object>> writePipe = PipeRegistry.buildPipeFrom(accessor, this.view, "write", true);
                                            return writePipe;
